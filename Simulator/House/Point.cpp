@@ -1,6 +1,13 @@
-//
-// Created by Roni Poyas on 26/03/2016.
-// Copyright (c) 2016 ___FULLUSERNAME___. All rights reserved.
-//
 
 #include "Point.h"
+
+void Point::move(Direction d)
+{
+    const static function<void(Point&)> do_move[] = {
+            [](Point&p){++p.x;}, // East
+            [](Point&p){--p.x;}, // West
+            [](Point&p){++p.y;}, // South
+            [](Point&p){--p.y;}  // North
+    };
+    do_move[(int)d](*this);
+}

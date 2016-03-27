@@ -18,7 +18,7 @@ void Simulator::Simulate(int argc, const char * argv[])
     map<string,int> config = FileReader::ReadConfig("");
 
     //Read House
-    House house;
+//    House house = House();
 
 
 
