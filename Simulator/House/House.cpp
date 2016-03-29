@@ -36,6 +36,27 @@ House::~House()
     delete [] house;
 }
 
+void House::SetRobotLocation(Point point)
+{
+    robot = point;
+}
+
+void House::MoveRobot(Direction direction)
+{
+    robot.move(direction);
+}
+
+bool House::isWall(Point point)
+{
+    char item = house[point.getX()][point.getY()];
+    return !(item == House::DOCKING || item == House::WALL);
+}
+
+int House::dirtLevel(Point point)
+{
+    return house[point.getX()][point.getY()];
+}
+
 Point House::findDocking()
 {
     if (docking.getX() != -1 && docking.getY() != -1)
@@ -57,16 +78,6 @@ Point House::find(ItemType itemType)
         }
     }
     return Point(-1, -1);
-}
-
-void House::SetRobot(Point point)
-{
-    robot = point;
-}
-
-void House::MoveRobot(Direction direction)
-{
-    robot.move(direction);
 }
 
 Point House::findRobot()

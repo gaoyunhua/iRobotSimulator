@@ -18,14 +18,16 @@ class Point
 
 public:
     Point(int _x, int _y) : x(_x), y(_y) {}
+    Point(const Point& point);
+
+    int getX()const {return x;}
+    int getY()const {return y;}
+    void move(Direction d);
+    static Point GetPointByDirection(const Point& point, Direction d);
+
     Point distance(const Point& other)const {
         return Point(x - other.x, y - other.y);
     }
-    int getX()const {return x;}
-    int getY()const {return y;}
-
-    void move(Direction d);
-
 };
 
 #endif //SIMULATOR_POINT_H

@@ -4,10 +4,16 @@
 
 
 #include "AbstractSensor.h"
+#include "House.h"
 
-class Sensor : AbstractSensor
+class Sensor : public AbstractSensor
 {
-    virtual SensorInformation sense();
+    House& house;
+
+public:
+    SensorInformation sense();
+    ~Sensor();
+    void setHouse(House& _house);
 };
 
 

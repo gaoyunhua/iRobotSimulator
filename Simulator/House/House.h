@@ -20,14 +20,16 @@ public:
     House(const House& aHouse);
     ~House();
 
-    enum ItemType {DOCKING = 'D', WALL = 'W', ROBOT = 'R'};
-    void SetRobot(Point point);
+    void SetRobotLocation(Point point);
     void MoveRobot(Direction direction);
 
+    bool isWall(Point point);
+    int dirtLevel(Point point);
     Point findDocking();
     Point findRobot();
-
     Point find(ItemType itemType);
+
+    enum ItemType {DOCKING = 'D', WALL = 'W', ROBOT = 'R'};
 };
 
 //class House {
