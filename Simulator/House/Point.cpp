@@ -12,7 +12,7 @@ void Point::move(Direction d)
     do_move[(int)d](*this);
 }
 
-static Point Point::GetPointByDirection(const Point& point, Direction d)
+Point Point::GetPointByDirection(const Point& point, Direction d)
 {
     Point localPoint = Point(point);
     const static function<void(Point&)> do_move[] = {

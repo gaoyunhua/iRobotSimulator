@@ -9,6 +9,8 @@ using namespace std;
 
 class House
 {
+
+
     char** house;
     int rows;
     int columns;
@@ -16,20 +18,23 @@ class House
     Point robot = Point(-1, -1);
 
 public:
+    House(int houseRows, int houseColumns, char** _house);
     House(int rows, int columns);
     House(const House& aHouse);
     ~House();
 
-    void SetRobotLocation(Point point);
-    void MoveRobot(Direction direction);
+    char point(Point point);
+    void setPoint(Point point, char value);
 
     bool isWall(Point point);
     int dirtLevel(Point point);
+    int cleanOneUnit(Point point);
     Point findDocking();
-    Point findRobot();
-    Point find(ItemType itemType);
+    int amountOfDirt();
 
     enum ItemType {DOCKING = 'D', WALL = 'W', ROBOT = 'R'};
+    Point find(ItemType itemType);
+
 };
 
 //class House {

@@ -4,13 +4,10 @@
 
 #include <iostream>
 #include <functional>
+#include "Direction.h"
+
 using namespace std;
 
-enum class Direction {East, West, South, North, Stay};
-
-struct UnexpectedDirection {
-    UnexpectedDirection(Direction d){}
-};
 
 class Point
 {
@@ -27,6 +24,11 @@ public:
 
     Point distance(const Point& other)const {
         return Point(x - other.x, y - other.y);
+    }
+
+    bool equals(Point _point)
+    {
+        return this->x == _point.x && this->y == _point.y;
     }
 };
 

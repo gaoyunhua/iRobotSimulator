@@ -9,11 +9,12 @@
 class Sensor : public AbstractSensor
 {
     House& house;
+    Point& robotLocation;
 
 public:
-    SensorInformation sense();
+    Sensor(House& _house, Point& _robotLocation) : house(_house), robotLocation(_robotLocation){}
+    SensorInformation sense() const;
     ~Sensor();
-    void setHouse(House& _house);
 };
 
 

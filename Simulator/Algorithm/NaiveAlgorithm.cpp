@@ -7,16 +7,6 @@ void NaiveAlgorithm::setSensor(const AbstractSensor& _sensor)
     sensor = _sensor;
 }
 
-void NaiveAlgorithm::setConfiguration(map<string, int> _config)
-{
-    config = _config;
-}
-
-void NaiveAlgorithm::setHouse(House& house)
-{
-    currentHouse = house;
-}
-
 Direction NaiveAlgorithm::step()
 {
     SensorInformation locationInfo = sensor.sense();
@@ -35,8 +25,16 @@ Direction NaiveAlgorithm::getDirection(const SensorInformation &locationInfo) co
         randomIndex = (randomIndex + 1) % 3;
     }
 
-    if (randomIndex == -1)
-        return Direction::Stay;
+    if (randomIndex == -1 || locationInfo.isWall[randomIndex])
+        return Direction::Error;
 
     return (Direction) randomIndex;
+}
+
+void NaiveAlgorithm::setConfiguration(map<string, int> _config)
+{
+}
+
+void NaiveAlgorithm::aboutToFinish(int stepsTillFinishing)
+{
 }

@@ -3,6 +3,25 @@
 
 using namespace std;
 
+static const char CleanRatePerUnit = '1';
+
+House::House(int _rows, int _columns, char** _house)
+{
+    //House(_rows, _columns);
+    
+    rows = _rows;
+    columns = _columns;
+    house = new char*[_rows];
+    for (int i = 0; i < _rows; i++)
+    {
+        house[i] = new char[_columns];
+    }
+
+    for (int i = 0; i < _rows; i++)
+        for (int j = 0; j < _columns; j++)
+            house[i][j] = _house[i][j];
+}
+
 House::House(int houseRows, int houseColumns)
 {
     rows = houseRows;
@@ -23,10 +42,8 @@ House::House(const House& aHouse)
     docking = h.docking;
 
     for (int i = 0; i < rows; i++)
-    {
         for (int j = 0; j < columns; j++)
             house[i][j] = aHouse.house[i][j];
-    }
 }
 
 House::~House()
@@ -36,25 +53,22 @@ House::~House()
     delete [] house;
 }
 
-void House::SetRobotLocation(Point point)
-{
-    robot = point;
-}
-
-void House::MoveRobot(Direction direction)
-{
-    robot.move(direction);
-}
-
 bool House::isWall(Point point)
 {
+    if (point.getX() < 0 || point.getY() < 0 || point.getX() >= columns || point.getY() >= rows)
+        return true;
+    
     char item = house[point.getX()][point.getY()];
-    return !(item == House::DOCKING || item == House::WALL);
+    return item == House::WALL;
 }
 
 int House::dirtLevel(Point point)
 {
-    return house[point.getX()][point.getY()];
+    char spot = this->point(point);
+    if (spot < 49 || spot > 57) // spot < '0' + 1 || spot > '9' => not dust
+        return 0;
+
+    return house[point.getX()][point.getY()] - ((char)49);
 }
 
 Point House::findDocking()
@@ -80,10 +94,46 @@ Point House::find(ItemType itemType)
     return Point(-1, -1);
 }
 
-Point House::findRobot()
+int House::cleanOneUnit(Point point)
 {
-    if (robot.getX() != -1 && robot.getY() != -1)
-        return robot;
+    char spot = this->point(point);
 
-    return House::find(ItemType::ROBOT);
+    if (spot == ItemType::WALL)
+    {
+        string message = "Robot crashed into a wall at point: " + to_string(point.getX()) + "," + to_string(point.getY());
+        throw invalid_argument(message);
+    }
+
+    if (spot < 49 || spot > 57) // spot < '0' + 1 || spot > '9'
+        return 0;
+
+    char unitValue = (char) max(0, (int)(spot - CleanRatePerUnit));
+    this->setPoint(point, unitValue);
+
+    return spot - unitValue;
+}
+
+char House::point(Point point)
+{
+    return house[point.getX()][point.getY()];
+}
+
+void House::setPoint(Point point, char value)
+{
+    house[point.getX()][point.getY()] = value;
+}
+
+int House::amountOfDirt()
+{
+    int sumOfDirt = 0;
+
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < columns; j++)
+        {
+            sumOfDirt += this->dirtLevel(Point(i, j));
+        }
+    }
+
+    return sumOfDirt;
 }

@@ -9,17 +9,17 @@
 
 class NaiveAlgorithm : public AbstractAlgorithm
 {
-    House currentHouse;
     AbstractSensor& sensor;
-    map<string, int> config;
 
 public:
-    void setSensor(const AbstractSensor &sensor);
-    void setConfiguration(map<string, int> config);
-    Direction step();
+    NaiveAlgorithm(AbstractSensor& _sensor) : sensor(_sensor){}
 
-    void setHouse(House& house);
-    Direction getDirection(const SensorInformation &locationInfo) const;
+    virtual void setSensor(const AbstractSensor& sensor);
+    virtual Direction step();
+    virtual void setConfiguration(map<string, int> config);
+    virtual void aboutToFinish(int stepsTillFinishing);
+    virtual Direction getDirection(const SensorInformation &locationInfo) const;
+    virtual ~NaiveAlgorithm() {}
 };
 
 

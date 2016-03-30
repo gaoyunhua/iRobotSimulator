@@ -7,8 +7,8 @@ map<string,int> FileReader::ReadConfig(string fileName)
     map<string,int> configurationMap;
     configurationMap.clear();
 
-    if (fileName.empty())
-        return configurationMap;
+//    if (fileName.empty())
+//        return configurationMap;
 
     /*read values*/
     configurationMap.insert(pair<string,int>("MaxSteps", 1200));

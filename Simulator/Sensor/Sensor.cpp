@@ -1,10 +1,8 @@
 
 #include "Sensor.h"
 
-SensorInformation Sensor::sense()
+SensorInformation Sensor::sense() const
 {
-    Point robotLocation = house.findRobot();
-
     SensorInformation sensorInformation;
     for (int i = 0; i < 4; i++)
     {
@@ -18,9 +16,4 @@ SensorInformation Sensor::sense()
 
 Sensor::~Sensor()
 {
-}
-
-void Sensor::setHouse(House &_house)
-{
-    house = _house;
 }

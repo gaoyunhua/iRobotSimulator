@@ -10,11 +10,12 @@
 		26F4D1321CF9A1414F8EB0A9 /* House.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 26F4D047C1FA4204896BB06A /* House.cpp */; };
 		26F4D158F4A2BAED7ED15915 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 26F4D57803BA9D5D3A7816EE /* main.cpp */; };
 		26F4D1870495792C6A95F647 /* Point.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 26F4D138B763641F59CDD733 /* Point.cpp */; };
+		26F4D1873C72C174A3BDB00E /* Cleaner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 26F4D88C6A8898519AB4B8D6 /* Cleaner.cpp */; };
 		26F4D56C0543F794D5D106B4 /* NaiveAlgorithm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 26F4DBC361A1A8EAF1C2DCB0 /* NaiveAlgorithm.cpp */; };
 		26F4D614323BCDAB560C3AFF /* Sensor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 26F4DCDC956F4C6A41D6519C /* Sensor.cpp */; };
 		26F4D9D6FA015C57CA17C28F /* FileReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 26F4D599BB8B6E953E0CF016 /* FileReader.cpp */; };
-		26F4DA0D33ACBC8B7103F021 /* Cleaner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 26F4D4DBB94C21AD34355DAD /* Cleaner.cpp */; };
 		26F4DC32BC5EFDEA246D2CE8 /* Simulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 26F4DCC99118A3535705498B /* Simulator.cpp */; };
+		26F4DDC8EC5D4ABB5A148A4C /* CleanerResult.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 26F4DBE1120254B6140EF9DC /* CleanerResult.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -38,15 +39,17 @@
 		26F4D322A645F033D7BA140A /* Simulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Simulator.h; sourceTree = "<group>"; };
 		26F4D3E58456150E8C1AE9BB /* Sensor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sensor.h; sourceTree = "<group>"; };
 		26F4D4198F75621E8B821BF7 /* Direction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Direction.h; sourceTree = "<group>"; };
+		26F4D46684F65C9540C0060B /* CleanerResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CleanerResult.h; sourceTree = "<group>"; };
 		26F4D492C33A720899ED5A2F /* AbstractSensor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbstractSensor.h; sourceTree = "<group>"; };
-		26F4D4DBB94C21AD34355DAD /* Cleaner.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cleaner.cpp; sourceTree = "<group>"; };
 		26F4D57803BA9D5D3A7816EE /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		26F4D599BB8B6E953E0CF016 /* FileReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileReader.cpp; sourceTree = "<group>"; };
-		26F4D79AE514E5835E490091 /* Cleaner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cleaner.h; sourceTree = "<group>"; };
+		26F4D82D225E58B9FEC10E64 /* Cleaner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cleaner.h; sourceTree = "<group>"; };
+		26F4D88C6A8898519AB4B8D6 /* Cleaner.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cleaner.cpp; sourceTree = "<group>"; };
 		26F4DB4A206DE236DDE88CAE /* NaiveAlgorithm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NaiveAlgorithm.h; sourceTree = "<group>"; };
 		26F4DB6FF885E1B3D2CEF133 /* Point.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Point.h; sourceTree = "<group>"; };
 		26F4DBAA6CD8714FDC1BD7A1 /* SensorInformation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SensorInformation.h; sourceTree = "<group>"; };
 		26F4DBC361A1A8EAF1C2DCB0 /* NaiveAlgorithm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NaiveAlgorithm.cpp; sourceTree = "<group>"; };
+		26F4DBE1120254B6140EF9DC /* CleanerResult.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CleanerResult.cpp; sourceTree = "<group>"; };
 		26F4DCC99118A3535705498B /* Simulator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Simulator.cpp; sourceTree = "<group>"; };
 		26F4DCDC956F4C6A41D6519C /* Sensor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Sensor.cpp; sourceTree = "<group>"; };
 		26F4DE7F1B9C160D5F07885F /* Simulator */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Simulator; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -82,8 +85,7 @@
 				26F4D308A979B2CF180D73DF /* House */,
 				26F4DE484C01E09EFAD43B46 /* Sensor */,
 				26F4DDA066BDE4B3DA339CA9 /* Algorithm */,
-				26F4D4DBB94C21AD34355DAD /* Cleaner.cpp */,
-				26F4D79AE514E5835E490091 /* Cleaner.h */,
+				26F4D39FBC49F8417C517079 /* Cleaner */,
 			);
 			path = Simulator;
 			sourceTree = "<group>";
@@ -97,6 +99,17 @@
 				26F4DB6FF885E1B3D2CEF133 /* Point.h */,
 			);
 			path = House;
+			sourceTree = "<group>";
+		};
+		26F4D39FBC49F8417C517079 /* Cleaner */ = {
+			isa = PBXGroup;
+			children = (
+				26F4D82D225E58B9FEC10E64 /* Cleaner.h */,
+				26F4D88C6A8898519AB4B8D6 /* Cleaner.cpp */,
+				26F4DBE1120254B6140EF9DC /* CleanerResult.cpp */,
+				26F4D46684F65C9540C0060B /* CleanerResult.h */,
+			);
+			path = Cleaner;
 			sourceTree = "<group>";
 		};
 		26F4D7F21490B84260CFA583 /* Interface */ = {
@@ -202,7 +215,8 @@
 				26F4D1870495792C6A95F647 /* Point.cpp in Sources */,
 				26F4D614323BCDAB560C3AFF /* Sensor.cpp in Sources */,
 				26F4D56C0543F794D5D106B4 /* NaiveAlgorithm.cpp in Sources */,
-				26F4DA0D33ACBC8B7103F021 /* Cleaner.cpp in Sources */,
+				26F4D1873C72C174A3BDB00E /* Cleaner.cpp in Sources */,
+				26F4DDC8EC5D4ABB5A148A4C /* CleanerResult.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
