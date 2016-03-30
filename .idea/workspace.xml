@@ -1,17 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="09c9dbe3-3040-46df-b6b5-22b34b5f55aa" name="Default" comment="successful simulator">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/Simulator.iml" afterPath="$PROJECT_DIR$/.idea/Simulator.iml" />
+    <list default="true" id="09c9dbe3-3040-46df-b6b5-22b34b5f55aa" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Simulator/Algorithm/NaiveAlgorithm.cpp" afterPath="$PROJECT_DIR$/Simulator/Algorithm/NaiveAlgorithm.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Simulator/Cleaner/Cleaner.cpp" afterPath="$PROJECT_DIR$/Simulator/Cleaner/Cleaner.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Simulator/Cleaner/Cleaner.h" afterPath="$PROJECT_DIR$/Simulator/Cleaner/Cleaner.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Simulator/House/House.cpp" afterPath="$PROJECT_DIR$/Simulator/House/House.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Simulator/House/House.h" afterPath="$PROJECT_DIR$/Simulator/House/House.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Simulator/House/Point.cpp" afterPath="$PROJECT_DIR$/Simulator/House/Point.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Simulator/House/Point.h" afterPath="$PROJECT_DIR$/Simulator/House/Point.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Simulator/Simulator.cpp" afterPath="$PROJECT_DIR$/Simulator/Simulator.cpp" />
     </list>
     <ignored path="Simulator.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -462,7 +453,13 @@
       <option name="project" value="LOCAL" />
       <updated>1459298762794</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="fixes">
+      <created>1459319032906</created>
+      <option name="number" value="00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1459319032906</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -506,7 +503,8 @@
     <MESSAGE value="cleaner" />
     <MESSAGE value="WIP" />
     <MESSAGE value="successful simulator" />
-    <option name="LAST_COMMIT_MESSAGE" value="successful simulator" />
+    <MESSAGE value="fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
