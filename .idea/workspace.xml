@@ -2,26 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="09c9dbe3-3040-46df-b6b5-22b34b5f55aa" name="Default" comment="WIP">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Simulator/Cleaner/Cleaner.cpp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Simulator/Cleaner/Cleaner.h" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Simulator/Cleaner/CleanerResult.cpp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Simulator/Cleaner/CleanerResult.h" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Simulator/Cleaner.cpp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Simulator/Cleaner.h" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/Simulator.iml" afterPath="$PROJECT_DIR$/.idea/Simulator.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Simulator.xcodeproj/project.pbxproj" afterPath="$PROJECT_DIR$/Simulator.xcodeproj/project.pbxproj" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Simulator/Algorithm/NaiveAlgorithm.cpp" afterPath="$PROJECT_DIR$/Simulator/Algorithm/NaiveAlgorithm.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Simulator/Algorithm/NaiveAlgorithm.h" afterPath="$PROJECT_DIR$/Simulator/Algorithm/NaiveAlgorithm.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Simulator/FilesReader/FileReader.cpp" afterPath="$PROJECT_DIR$/Simulator/FilesReader/FileReader.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Simulator/House/House.cpp" afterPath="$PROJECT_DIR$/Simulator/House/House.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Simulator/House/House.h" afterPath="$PROJECT_DIR$/Simulator/House/House.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Simulator/House/Point.cpp" afterPath="$PROJECT_DIR$/Simulator/House/Point.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Simulator/House/Point.h" afterPath="$PROJECT_DIR$/Simulator/House/Point.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Simulator/Interface/Direction.h" afterPath="$PROJECT_DIR$/Simulator/Interface/Direction.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Simulator/Sensor/Sensor.cpp" afterPath="$PROJECT_DIR$/Simulator/Sensor/Sensor.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Simulator/Sensor/Sensor.h" afterPath="$PROJECT_DIR$/Simulator/Sensor/Sensor.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Simulator/Simulator.cpp" afterPath="$PROJECT_DIR$/Simulator/Simulator.cpp" />
     </list>
     <ignored path="Simulator.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -77,8 +58,8 @@
       <file leaf-file-name="FileReader.h" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Simulator/FilesReader/FileReader.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.14424242">
-              <caret line="9" column="16" selection-start-line="9" selection-start-column="16" selection-end-line="9" selection-end-column="16" />
+            <state vertical-scroll-proportion="0.5">
+              <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -455,7 +436,13 @@
       <option name="project" value="LOCAL" />
       <updated>1459230228839</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="WIP">
+      <created>1459298729151</created>
+      <option name="number" value="00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1459298729151</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -465,7 +452,7 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32942554" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32942554" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32942554" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -951,8 +938,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Simulator/FilesReader/FileReader.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.14424242">
-          <caret line="9" column="16" selection-start-line="9" selection-start-column="16" selection-end-line="9" selection-end-column="16" />
+        <state vertical-scroll-proportion="0.5">
+          <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
           <folding />
         </state>
       </provider>
