@@ -16,18 +16,20 @@ Direction NaiveAlgorithm::step()
 Direction NaiveAlgorithm::getDirection(const SensorInformation &locationInfo) const
 {
     int randomInt = rand();
-    int randomIndex = randomInt % 3;
+    int randomIndex = randomInt % 4;
     int initialRandomIndex = randomIndex - 1;
 
     while (randomIndex != initialRandomIndex)
     {
         if (!locationInfo.isWall[randomIndex])
             break;
-        randomIndex = (randomIndex + 1) % 3;
+        randomIndex = (randomIndex + 1);
+        if (randomIndex >=4)
+            randomIndex = 0;
     }
 
     if (randomIndex == -1 || locationInfo.isWall[randomIndex])
-        return Direction::Error;
+        return Direction::Stay;
 
     return (Direction) randomIndex;
 }

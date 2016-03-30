@@ -3,18 +3,16 @@
 
 using namespace std;
 
-static const char CleanRatePerUnit = '1';
+static const int CleanRatePerUnit = 1;
 
 House::House(int _rows, int _columns, char** _house)
 {
-    //House(_rows, _columns);
-    
     rows = _rows;
     columns = _columns;
-    house = new char*[_rows];
-    for (int i = 0; i < _rows; i++)
+    house = new char*[_columns];
+    for (int i = 0; i < _columns; i++)
     {
-        house[i] = new char[_columns];
+        house[i] = new char[_rows];
     }
 
     for (int i = 0; i < _rows; i++)
@@ -55,11 +53,19 @@ House::~House()
 
 bool House::isWall(Point point)
 {
-    if (point.getX() < 0 || point.getY() < 0 || point.getX() >= columns || point.getY() >= rows)
+    if (!isPointValid(point))
         return true;
     
     char item = house[point.getX()][point.getY()];
     return item == House::WALL;
+}
+
+bool House::isPointValid(Point point)
+{
+    if (point.getX() < 0 || point.getY() < 0 || point.getX() >= rows || point.getY() >= columns)
+        return false;
+
+    return true;
 }
 
 int House::dirtLevel(Point point)
@@ -87,7 +93,7 @@ Point House::find(ItemType itemType)
         {
             if(house[row][col] == itemType)
             {
-                return Point(col, row);
+                return Point(row, col);
             }
         }
     }
@@ -96,6 +102,8 @@ Point House::find(ItemType itemType)
 
 int House::cleanOneUnit(Point& point)
 {
+    cout << "Clean point:" + to_string(point.getX()) + "," + to_string(point.getY()) << endl;
+
     char spot = this->point(point);
 
     if (spot == ItemType::WALL)
@@ -107,7 +115,8 @@ int House::cleanOneUnit(Point& point)
     if (spot < 49 || spot > 57) // spot < '0' + 1 || spot > '9'
         return 0;
 
-    char unitValue = (char) max(0, (int)(spot - CleanRatePerUnit));
+    cout << "Dirt level:" + to_string(house[point.getX()][point.getY()] - 48) << endl;
+    char unitValue = (char) max(0, (spot - CleanRatePerUnit));
     this->setPoint(point, unitValue);
 
     return spot - unitValue;

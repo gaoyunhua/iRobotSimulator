@@ -3,8 +3,6 @@
 
 CleanerResult Cleaner::clean()
 {
-    //Robot starts at Docking point.
-    //Start Cleaning
     int steps = 0;
     int dirtCleaned = 0;
     int sumOfDirt = house.amountOfDirt();
@@ -13,19 +11,15 @@ CleanerResult Cleaner::clean()
     int batteryLevel = configuration.at("BatteryCapacity");
 
     int rechargeRate = configuration.at("BatteryRechargeRate");
-//    Point docking = house.findDocking();
-//    Point& robotLocation(docking);
 
     algorithm.setConfiguration(configuration);
-//    sensor.robotLocation = robotLocation;
     algorithm.setSensor(sensor);
 
-
-
-    while (steps < maxSteps)
+    while (steps <= maxSteps)
     {
         Direction moveDirection = algorithm.step();
-        if (moveDirection == Direction::Error)
+        cout << "Move:" + to_string((int)moveDirection) << endl;
+        if (moveDirection == Direction::Stay)
         {
             cout << "Simulation break early. About to commit erroneous move" << endl;
             return stopSimulation();
@@ -61,7 +55,6 @@ CleanerResult Cleaner::clean()
 
 void Cleaner::performStep(int &steps, int &dirtCleaned, int &batteryLevel)
 {
-    //Update dust cleaned
     dirtCleaned += house.cleanOneUnit(robotLocation);
 
     int batteryConsumptionPerMove = configuration.at("BatteryConsumptionRate");
@@ -84,15 +77,3 @@ CleanerResult Cleaner::stopSimulation()
 void Cleaner::TryReturnToDockFromPoint(Point point)
 {
 }
-
-
-
-
-
-/*
- * configurationMap.insert(pair<string,int>("MaxSteps", 1200));
-    configurationMap.insert(pair<string,int>("MaxStepsAfterWinner", 200));
-    configurationMap.insert(pair<string,int>("BatteryCapacity", 400));
-    configurationMap.insert(pair<string,int>("BatteryConsumptionRate", 1));
-    configurationMap.insert(pair<string,int>("BatteryRechargeRate", 20));
- */
