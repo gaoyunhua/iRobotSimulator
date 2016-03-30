@@ -15,7 +15,8 @@ Direction NaiveAlgorithm::step()
 
 Direction NaiveAlgorithm::getDirection(const SensorInformation &locationInfo) const
 {
-    int randomIndex = rand() % 3;
+    int randomInt = rand();
+    int randomIndex = randomInt % 3;
     int initialRandomIndex = randomIndex - 1;
 
     while (randomIndex != initialRandomIndex)

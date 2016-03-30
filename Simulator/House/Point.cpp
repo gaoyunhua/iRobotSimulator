@@ -12,6 +12,12 @@ void Point::move(Direction d)
     do_move[(int)d](*this);
 }
 
+void Point::move(Point& p)
+{
+    x = p.x;
+    y = p.y;
+}
+
 Point Point::GetPointByDirection(const Point& point, Direction d)
 {
     Point localPoint = Point(point);

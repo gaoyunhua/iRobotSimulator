@@ -13,12 +13,14 @@ CleanerResult Cleaner::clean()
     int batteryLevel = configuration.at("BatteryCapacity");
 
     int rechargeRate = configuration.at("BatteryRechargeRate");
+//    Point docking = house.findDocking();
+//    Point& robotLocation(docking);
 
     algorithm.setConfiguration(configuration);
-//    sensor.setHouse(house);
+//    sensor.robotLocation = robotLocation;
     algorithm.setSensor(sensor);
 
-    Point robotLocation = house.findDocking();
+
 
     while (steps < maxSteps)
     {
@@ -32,7 +34,7 @@ CleanerResult Cleaner::clean()
         Point newRobotLocation = Point::GetPointByDirection(robotLocation, moveDirection);
         if (newRobotLocation.equals(house.findDocking()))
         {
-            robotAtDock(rechargeRate, newRobotLocation, steps, batteryLevel, robotLocation);
+            robotAtDock(rechargeRate, newRobotLocation, steps, batteryLevel);
             continue;
         }
 
@@ -42,11 +44,13 @@ CleanerResult Cleaner::clean()
             break;
         }
 
-        performStep(newRobotLocation, steps, dirtCleaned, batteryLevel, robotLocation);
+        robotLocation.move(moveDirection);
+        performStep(steps, dirtCleaned, batteryLevel);
         steps++;
 
         if (dirtCleaned == sumOfDirt)
         {
+            cout << "No more Dirt!\n# Steps:" + to_string(steps) << endl;
             TryReturnToDockFromPoint(robotLocation);
             return CleanerResult(steps, sumOfDirt, dirtCleaned, robotLocation.equals(house.findDocking()));
         }
@@ -55,10 +59,8 @@ CleanerResult Cleaner::clean()
     return CleanerResult(steps, sumOfDirt, dirtCleaned, robotLocation.equals(house.findDocking()));
 }
 
-void Cleaner::performStep(const Point &newRobotLocation, int &steps, int &dirtCleaned, int &batteryLevel, Point &robotLocation) const
+void Cleaner::performStep(int &steps, int &dirtCleaned, int &batteryLevel)
 {
-    robotLocation = newRobotLocation;
-
     //Update dust cleaned
     dirtCleaned += house.cleanOneUnit(robotLocation);
 
@@ -66,12 +68,12 @@ void Cleaner::performStep(const Point &newRobotLocation, int &steps, int &dirtCl
     batteryLevel = max(0, batteryLevel - batteryConsumptionPerMove);
 }
 
-void Cleaner::robotAtDock(int rechargeRate, const Point &newRobotLocation, int &steps, int &batteryLevel, Point &robotLocation) const
+void Cleaner::robotAtDock(int rechargeRate,Point &newRobotLocation, int &steps, int &batteryLevel)
 {
     int capacity = configuration.at("BatteryCapacity");
     batteryLevel = min(capacity, batteryLevel + rechargeRate);
     steps++;
-    robotLocation = newRobotLocation;
+    robotLocation.move(newRobotLocation);
 }
 
 CleanerResult Cleaner::stopSimulation()

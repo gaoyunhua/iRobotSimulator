@@ -14,19 +14,20 @@ class Cleaner
     Sensor& sensor;
     House& house;
     const map<string, int> configuration;
+    Point& robotLocation;
 
 public:
-    Cleaner(AbstractAlgorithm& _algorithm, Sensor& _sensor, House& _house, map<string,int> _config) :
-            algorithm(_algorithm), sensor(_sensor), house(_house), configuration(_config){}
+    Cleaner(AbstractAlgorithm& _algorithm, Sensor& _sensor, House& _house, Point& _robotLocation , map<string,int> _config) :
+            algorithm(_algorithm), sensor(_sensor), house(_house), robotLocation(_robotLocation), configuration(_config){}
 
     CleanerResult clean();
     CleanerResult stopSimulation();
 
     void TryReturnToDockFromPoint(Point point);
 
-    void robotAtDock(int rechargeRate, const Point &newRobotLocation, int &steps, int &batteryLevel, Point &robotLocation) const;
+    void robotAtDock(int rechargeRate, Point &newRobotLocation, int &steps, int &batteryLevel);
 
-    void performStep(const Point &newRobotLocation, int &steps, int &dirtCleaned, int &batteryLevel, Point &robotLocation) const;
+    void performStep(int &steps, int &dirtCleaned, int &batteryLevel);
 };
 
 

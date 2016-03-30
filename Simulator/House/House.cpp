@@ -94,7 +94,7 @@ Point House::find(ItemType itemType)
     return Point(-1, -1);
 }
 
-int House::cleanOneUnit(Point point)
+int House::cleanOneUnit(Point& point)
 {
     char spot = this->point(point);
 

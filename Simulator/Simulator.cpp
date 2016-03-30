@@ -24,7 +24,7 @@ void Simulator::Simulate(int argc, const char * argv[])
         //             1         2         3         4         5         6         7
         //   01234567890123456789012345678901234567890123456789012345678901234567890123456789
             "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW", // 0
-            "W  99   D              1234321                                                 W", // 1
+            "W  99  9D              1234321                                                 W", // 1
             "W  99      WWWWWWW     1234321                     W                       1   W", // 2
             "W              W                                   W   555                 2   W", // 3
             "W              W                                   W   555                 3   W", // 4
@@ -60,9 +60,21 @@ void Simulator::Simulate(int argc, const char * argv[])
 
 //    AbstractSensor& sensor = s;
 
-    Cleaner cleaner(algorithm, s, house, FileReader::ReadConfig(""));
+    Cleaner cleaner(algorithm, s, house, robotLocation, FileReader::ReadConfig(""));
 
     CleanerResult result = cleaner.clean();
+
+    cout <<
+            "Completed:\n# Steps:" + to_string(result.numOfSteps) +
+                    "\nPre-Dirt:" + to_string(result.sumDirtInHouse) +
+                    "\nPost-Dirt:" + to_string(result.sumDirtInHouse - result.sumDirtCollected) +
+                    "\nBack-To-Dock:" + (result.isBackInDocking ? "True" : "False")
+                    << endl;
+
+    //int numOfSteps;
+//    int sumDirtInHouse;
+//    int sumDirtCollected;
+//    bool isBackInDocking;
 
 
 //Winner Formula: positionInCompetition, winnerNumSteps, thisNumSteps, sumDirtInHouse, dirtCollected, isBackInDocking

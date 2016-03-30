@@ -28,7 +28,7 @@ public:
 
     bool isWall(Point point);
     int dirtLevel(Point point);
-    int cleanOneUnit(Point point);
+    int cleanOneUnit(Point& point);
     Point findDocking();
     int amountOfDirt();
 
