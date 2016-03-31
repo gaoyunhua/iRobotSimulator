@@ -1,6 +1,7 @@
 #ifndef __ABSTRACT_ALGORITHM__H_
 #define __ABSTRACT_ALGORITHM__H_
 
+#include <string>
 #include <map>
 using namespace std;
 

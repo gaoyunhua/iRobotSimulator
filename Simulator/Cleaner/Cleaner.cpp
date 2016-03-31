@@ -18,10 +18,8 @@ CleanerResult Cleaner::clean()
     while (steps <= maxSteps)
     {
         Direction moveDirection = algorithm.step();
-        cout << "Move:" + to_string((int)moveDirection) << endl;
-        if (moveDirection == Direction::Stay)
+        if ((int)moveDirection == 4)
         {
-            cout << "Simulation break early. About to commit erroneous move" << endl;
             return stopSimulation();
         }
 
@@ -34,7 +32,6 @@ CleanerResult Cleaner::clean()
 
         if (batteryLevel <= 0)
         {
-            cout << "Simulation end. Battery died" << endl;
             break;
         }
 
@@ -44,7 +41,6 @@ CleanerResult Cleaner::clean()
 
         if (dirtCleaned == sumOfDirt)
         {
-            cout << "No more Dirt!\n# Steps:" + to_string(steps) << endl;
             TryReturnToDockFromPoint(robotLocation);
             return CleanerResult(steps, sumOfDirt, dirtCleaned, robotLocation.equals(house.findDocking()));
         }

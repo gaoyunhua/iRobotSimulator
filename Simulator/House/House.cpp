@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdexcept>
 #include "House.h"
 
 using namespace std;
@@ -25,15 +26,15 @@ House::House(int houseRows, int houseColumns)
     rows = houseRows;
     columns = houseColumns;
     house = new char*[houseRows];
-    for (int i = 0; i < rows; i++)
+    for (int i = 0; i < houseRows; i++)
     {
-        house[i] = new char[columns];
+        house[i] = new char[houseColumns];
     }
 }
 
 House::House(const House& aHouse)
 {
-    House h = House::House(aHouse.rows, aHouse.columns);
+    House h(aHouse.rows, aHouse.columns);
     rows = h.rows;
     columns = h.columns;
     house = h.house;
@@ -47,7 +48,7 @@ House::House(const House& aHouse)
 House::~House()
 {
     for (int i=0; i < rows; i++)
-        delete [] house[i];
+        delete house[i];
     delete [] house;
 }
 
@@ -81,11 +82,11 @@ Point House::findDocking()
 {
     if (docking.getX() != -1 && docking.getY() != -1)
         return docking;
-    return House::find(ItemType::DOCKING);
+    return House::find('D');
 
 }
 
-Point House::find(ItemType itemType)
+Point House::find(char itemType)
 {
     for(int row = 0; row < rows; row++)
     {
@@ -102,20 +103,17 @@ Point House::find(ItemType itemType)
 
 int House::cleanOneUnit(Point& point)
 {
-    cout << "Clean point:" + to_string(point.getX()) + "," + to_string(point.getY()) << endl;
-
     char spot = this->point(point);
 
-    if (spot == ItemType::WALL)
+    if (spot == 'W')
     {
-        string message = "Robot crashed into a wall at point: " + to_string(point.getX()) + "," + to_string(point.getY());
+        string message = "Robot crashed into a wall";
         throw invalid_argument(message);
     }
 
     if (spot < 49 || spot > 57) // spot < '0' + 1 || spot > '9'
         return 0;
 
-    cout << "Dirt level:" + to_string(house[point.getX()][point.getY()] - 48) << endl;
     char unitValue = (char) max(0, (spot - CleanRatePerUnit));
     this->setPoint(point, unitValue);
 

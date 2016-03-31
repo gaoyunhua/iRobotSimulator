@@ -1,5 +1,8 @@
 #include <fstream>
 #include <map>
+#include <stdexcept>
+#include <string>
+#include <cstdlib>
 #include "FileReader.h"
 using namespace std;
 
@@ -9,20 +12,21 @@ map<string,int> FileReader::ReadConfig(string fileName)
     map<string,int> configurationMap = DefaultConfig();
 
     string line;
+
     int value, propertyCounter = 0;
-    
-    ifstream input = FileReader::getFileStream(filePath);
-    if (!input)
-    {
-        return configurationMap;
-    }
+
+    fstream file(filePath.c_str());
+    string finalPath = file.good() ? filePath : "../" + filePath;
+    file.close();
+
+    ifstream input(finalPath.c_str());
     
     while (input >> line)
     {
         string delimiter = "=";
         string key = line.substr(0, line.find(delimiter));
         string stringValue = line.substr(line.find(delimiter)+1, line.length() - key.length() - 1);
-        value = stoi(stringValue);
+        value = atoi(stringValue.c_str());
         if (configurationMap.count(key))
         {
             configurationMap[key] = value;
@@ -38,16 +42,6 @@ map<string,int> FileReader::ReadConfig(string fileName)
         throw invalid_argument("Invalid configuration file, missing properties");
 
     return configurationMap;
-}
-
-ifstream FileReader::getFileStream(string fileName)
-{
-    ifstream localInput(fileName);
-    if (localInput)
-        return localInput;
-
-    ifstream input("../" + fileName);
-    return input;
 }
 
 map<string,int> FileReader::DefaultConfig()
@@ -66,54 +60,29 @@ map<string,int> FileReader::DefaultConfig()
 
 House FileReader::ReadHouse()
 {
-//    enum {rows = 19, cols = 80};
-//    char houseStructure[rows][cols + 1] = {
-//        //             1         2         3         4         5         6         7
-//        //   01234567890123456789012345678901234567890123456789012345678901234567890123456789
-//            "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW", // 0
-//            "W  99  8D5             1234321                                                 W", // 1
-//            "W  99      WWWWWWW     1234321                     W                       1   W", // 2
-//            "W              W                                   W   555                 2   W", // 3
-//            "W              W                                   W   555                 3   W", // 4
-//            "W              W           WWWWWWWWWWWWWWWWWWWWWWWWW                       4   W", // 5
-//            "W              W                                                           5   W", // 6
-//            "W              W                                                           6   W", // 7
-//            "W                          WWWWWWWWWWWWWWWWWWWWWW  WWWWWWW                 7   W", // 8
-//            "W         1         2         3         4         5W 999 W  6         7        W", // 9
-//            "W              W           444                     W 999 W                 9   W", // 10
-//            "W              W           444                     W 999 W                 8   W", // 11
-//            "W              W                                   W     W                 7   W", // 12
-//            "W              W                                   WW   WW                 6   W", // 13
-//            "W              W                                    W   W                  5   W", // 14
-//            "W              W                                                           4   W", // 15
-//            "W              W                                                           3   W", // 16
-//            "W              W                                                               W", // 17
-//            "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW" // 18
-//    };
-
-    enum {rows = 19, cols = 31};
+    enum {rows = 19, cols = 80};
     char houseStructure[rows][cols + 1] = {
-            //             1         2         3//
-            //   0123456789012345678901234567890
-            "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW", // 0
-            "W  99  8D5             1234321W", // 1
-            "W  99      WWWWWWW     1234321W", // 2
-            "W              W              W", // 3
-            "W              W              W", // 4
-            "W              W           WWWW", // 5
-            "W              W              W", // 6
-            "W              W              W", // 7
-            "W                          WWWW", // 8
-            "W         1         2         W", // 9
-            "W              W           444W", // 10
-            "W              W           444W", // 11
-            "W              W              W", // 12
-            "W              W              W", // 13
-            "W              W              W", // 14
-            "W              W              W", // 15
-            "W              W              W", // 16
-            "W              W              W", // 17
-            "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW" // 18
+        //             1         2         3         4         5         6         7
+        //   01234567890123456789012345678901234567890123456789012345678901234567890123456789
+            "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW", // 0
+            "W  99  8D5             1234321                                                 W", // 1
+            "W  99      WWWWWWW     1234321                     W                       1   W", // 2
+            "W              W                                   W   555                 2   W", // 3
+            "W              W                                   W   555                 3   W", // 4
+            "W              W           WWWWWWWWWWWWWWWWWWWWWWWWW                       4   W", // 5
+            "W              W                                                           5   W", // 6
+            "W              W                                                           6   W", // 7
+            "W                          WWWWWWWWWWWWWWWWWWWWWW  WWWWWWW                 7   W", // 8
+            "W         1         2         3         4         5W 999 W  6         7        W", // 9
+            "W              W           444                     W 999 W                 9   W", // 10
+            "W              W           444                     W 999 W                 8   W", // 11
+            "W              W                                   W     W                 7   W", // 12
+            "W              W                                   WW   WW                 6   W", // 13
+            "W              W                                    W   W                  5   W", // 14
+            "W              W                                                           4   W", // 15
+            "W              W                                                           3   W", // 16
+            "W              W                                                               W", // 17
+            "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW" // 18
     };
 
     char** house = new char*[rows];
@@ -124,6 +93,11 @@ House FileReader::ReadHouse()
             house[i][j] = houseStructure[i][j];
     }
 
-    House completeHouse = House(19, 31, house);
+    House completeHouse = House(19, 81, house);
+
+    for (int i = 0; i < rows; i++)
+        delete [] house[i];
+    delete [] house;
+
     return completeHouse;
 }

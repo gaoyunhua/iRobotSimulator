@@ -18,8 +18,6 @@ private:
 public:
     static map<string,int> ReadConfig(string fileName);
     static House ReadHouse();
-
-    static ifstream getFileStream(string fileName);
 };
 
 

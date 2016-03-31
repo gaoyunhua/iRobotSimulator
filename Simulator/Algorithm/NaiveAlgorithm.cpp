@@ -1,4 +1,5 @@
 
+#include <cstdlib>
 #include "NaiveAlgorithm.h"
 using namespace std;
 
@@ -27,9 +28,6 @@ Direction NaiveAlgorithm::getDirection(const SensorInformation &locationInfo) co
         if (randomIndex >=4)
             randomIndex = 0;
     }
-
-    if (randomIndex == -1 || locationInfo.isWall[randomIndex])
-        return Direction::Stay;
 
     return (Direction) randomIndex;
 }

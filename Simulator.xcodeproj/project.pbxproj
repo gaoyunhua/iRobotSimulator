@@ -335,6 +335,7 @@
 				26F4DA21DC94E75CFAC0BB18 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

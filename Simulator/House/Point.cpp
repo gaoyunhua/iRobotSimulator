@@ -3,13 +3,29 @@
 
 void Point::move(Direction d)
 {
-    const static function<void(Point&)> do_move[] = {
-            [](Point&p){++p.x;}, // East
-            [](Point&p){--p.x;}, // West
-            [](Point&p){++p.y;}, // South
-            [](Point&p){--p.y;}  // North
-    };
-    do_move[(int)d](*this);
+
+    switch ((int)d)
+    {
+        case 0:
+        {
+            x++;
+        }
+        case 1:
+        {
+            x--;
+        }
+        case 2:
+        {
+            y++;
+        }
+        case 3:
+        {
+            y--;
+        }
+        default:
+            break;
+
+    }
 }
 
 void Point::move(Point& p)
@@ -21,13 +37,28 @@ void Point::move(Point& p)
 Point Point::GetPointByDirection(const Point& point, Direction d)
 {
     Point localPoint = Point(point);
-    const static function<void(Point&)> do_move[] = {
-            [](Point& p){ ++p.x; }, // East
-            [](Point& p){ --p.x; }, // West
-            [](Point& p){ ++p.y; }, // South
-            [](Point& p){ --p.y; }  // North
-    };
-    do_move[(int)d](localPoint);
+    switch ((int)d)
+    {
+        case 0:
+        {
+            localPoint.x++;
+        }
+        case 1:
+        {
+            localPoint.x--;
+        }
+        case 2:
+        {
+            localPoint.y++;
+        }
+        case 3:
+        {
+            localPoint.y--;
+        }
+        default:
+            break;
+
+    }
     return localPoint;
 }
 

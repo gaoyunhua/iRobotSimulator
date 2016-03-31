@@ -13,11 +13,11 @@ class Cleaner
     AbstractAlgorithm& algorithm;
     Sensor& sensor;
     House& house;
-    const map<string, int> configuration;
+    const map<string, int>& configuration;
     Point& robotLocation;
 
 public:
-    Cleaner(AbstractAlgorithm& _algorithm, Sensor& _sensor, House& _house, Point& _robotLocation , map<string,int> _config) :
+    Cleaner(AbstractAlgorithm& _algorithm, Sensor& _sensor, House& _house, Point& _robotLocation , map<string,int>& _config) :
             algorithm(_algorithm), sensor(_sensor), house(_house), robotLocation(_robotLocation), configuration(_config){}
 
     CleanerResult clean();
