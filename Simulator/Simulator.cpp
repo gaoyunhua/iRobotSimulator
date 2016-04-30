@@ -4,25 +4,22 @@
 #include "Cleaner.h"
 #include "NaiveAlgorithm.h"
 
-using namespace std;
+static const int NumberOfConfigParams = 5;
+static const string UsageMessage = "Usage: simulator [-config <config path>] [-house_path <house path>] [-algorithm_path <algorithm path>]";
 
 void Simulator::Simulate(int argc, const char * argv[])
 {
     map<string,int> config;
-    if (argc >= 2)
-    {
-        config = FileReader::ReadConfig(argv[1]);
-    }
-    else
-    {
-        config = FileReader::ReadConfig("");
-    }
 
-    if (config["MaxSteps"] == 0)
+    string configParamPath = ParseConfig(argc, argv);
+    config = FileReader::ReadConfig(configParamPath);
+
+    if (config.size() != NumberOfConfigParams)
     {
-        cout << "Usage: Config file not found" << endl;
+        cout << UsageMessage << endl;
         return;
     }
+
 
     House house = FileReader::ReadHouse();
     Point robotLocation = house.findDocking();
@@ -33,12 +30,34 @@ void Simulator::Simulate(int argc, const char * argv[])
     Cleaner cleaner(algorithm, s, house, robotLocation, config);
     CleanerResult result = cleaner.clean();
 
-    cout << score(result) << endl;
+    cout << Score(result) << endl;
 
     config.clear();
 }
 
-int Simulator::score(CleanerResult cleanerResult)
+string Simulator::ParseConfig(int argc, const char* argv[])
+{
+    string ConfigParamPrefix = "-config";
+    return ParseParam(ConfigParamPrefix, argc, argv);
+}
+
+string Simulator::ParseParam(string paramPrefix, int argc, const char* argv[])
+{
+    for (int i = 1; i < argc; i++)
+    {
+        string param = argv[i];
+        if (param.compare(paramPrefix) == 0)
+        {
+            if ((i+1) <= argc)
+            {
+                return argv[i+1];
+            }
+        }
+    }
+    return "";
+}
+
+int Simulator::Score(CleanerResult cleanerResult)
 {
     return max(0,
             2000 - ((cleanerResult.sumDirtInHouse - cleanerResult.sumDirtCollected) * 3) +

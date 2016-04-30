@@ -2,15 +2,18 @@
 #ifndef SIMULATOR_SIMULATOR_H
 #define SIMULATOR_SIMULATOR_H
 
-
-#include "CleanerResult.h"
+#include <string>
+#import "CleanerResult.h"
+using namespace std;
 
 class Simulator
 {
 public:
     void Simulate(int argc, const char * argv[]);
-    int score(CleanerResult cleanerResult);
+    int Score(CleanerResult cleanerResult);
+    string ParseConfig(int argc, const char* argv[]);
+    string ParseParam(string paramPrefix, int argc, const char* argv[]);
 };
 
 
-#endif //SIMULATOR_SIMULATOR_H
+#endif
