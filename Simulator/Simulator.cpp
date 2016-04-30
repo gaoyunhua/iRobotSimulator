@@ -17,7 +17,7 @@ void Simulator::Simulate(int argc, const char * argv[])
     {
         config = FileReader::ReadConfig("");
     }
-    
+
     if (config["MaxSteps"] == 0)
     {
         cout << "Usage: Config file not found" << endl;

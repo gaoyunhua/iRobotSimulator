@@ -26,9 +26,9 @@ House::House(int houseRows, int houseColumns)
     rows = houseRows;
     columns = houseColumns;
     house = new char*[houseRows];
-    for (int i = 0; i < houseRows; i++)
+    for (int i = 0; i < rows; i++)
     {
-        house[i] = new char[houseColumns];
+        house[i] = new char[columns];
     }
 }
 
@@ -47,8 +47,8 @@ House::House(const House& aHouse)
 
 House::~House()
 {
-    for (int i=0; i < rows; i++)
-        delete house[i];
+    for (int i=0; i < 1; i++)
+        delete [] house[i];
     delete [] house;
 }
 
@@ -56,7 +56,7 @@ bool House::isWall(Point point)
 {
     if (!isPointValid(point))
         return true;
-    
+
     char item = house[point.getX()][point.getY()];
     return item == House::WALL;
 }

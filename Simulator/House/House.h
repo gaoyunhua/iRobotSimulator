@@ -21,7 +21,7 @@ public:
     ~House();
 
     enum ItemType {DOCKING = 'D', WALL = 'W'};
-    
+
     char point(Point point);
     void setPoint(Point point, char value);
     Point findDocking();

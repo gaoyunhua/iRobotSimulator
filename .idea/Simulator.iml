@@ -2,23 +2,23 @@
 <module type="CIDR_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/Simulator/Interface/AbstractSensor.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Simulator/Interface/Direction.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Simulator/Interface/AbstractAlgorithm.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Simulator/Interface/SensorInformation.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Simulator/Interface/Direction.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Simulator/Interface/AbstractSensor.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Simulator/House/Point.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Simulator/House/House.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Simulator/House/House.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Simulator/House/Point.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Simulator/main.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Simulator/FilesReader/FileReader.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Simulator/FilesReader/FileReader.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Simulator/Cleaner/CleanerResult.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Simulator/Cleaner/CleanerResult.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Simulator/Cleaner/Cleaner.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Simulator/Cleaner/Cleaner.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Simulator/Algorithm/NaiveAlgorithm.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Simulator/Algorithm/NaiveAlgorithm.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Simulator/Cleaner/Cleaner.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Simulator/Cleaner/Cleaner.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Simulator/Cleaner/CleanerResult.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Simulator/Cleaner/CleanerResult.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Simulator/FilesReader/FileReader.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Simulator/FilesReader/FileReader.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Simulator/Simulator.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Simulator/Sensor/Sensor.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Simulator/Sensor/Sensor.h" isTestSource="false" />

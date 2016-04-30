@@ -20,7 +20,7 @@ map<string,int> FileReader::ReadConfig(string fileName)
     file.close();
 
     ifstream input(finalPath.c_str());
-    
+
     while (input >> line)
     {
         string delimiter = "=";
@@ -62,8 +62,8 @@ House FileReader::ReadHouse()
 {
     enum {rows = 19, cols = 80};
     char houseStructure[rows][cols + 1] = {
-        //             1         2         3         4         5         6         7
-        //   01234567890123456789012345678901234567890123456789012345678901234567890123456789
+            //             1         2         3         4         5         6         7
+            //   01234567890123456789012345678901234567890123456789012345678901234567890123456789
             "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW", // 0
             "W  99  8D5             1234321                                                 W", // 1
             "W  99      WWWWWWW     1234321                     W                       1   W", // 2
@@ -94,10 +94,5 @@ House FileReader::ReadHouse()
     }
 
     House completeHouse = House(19, 81, house);
-
-    for (int i = 0; i < rows; i++)
-        delete [] house[i];
-    delete [] house;
-
     return completeHouse;
 }
