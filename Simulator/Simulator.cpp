@@ -13,7 +13,10 @@ void Simulator::Simulate(int argc, const char * argv[])
     string configParamPath = ParseConfigParam(argc, argv);
     config = FileReader::ReadConfig(configParamPath);
 
-    House house = FileReader::ReadHouse();
+    string houseParamPath = ParseHouseParam(argc, argv);
+    House& house = *(FileReader::ReadHouses(houseParamPath));
+
+    //House Househouse = FileReader::ReadHouse();
     Point robotLocation = house.findDocking();
     Sensor s(house, robotLocation);
     NaiveAlgorithm n(s);

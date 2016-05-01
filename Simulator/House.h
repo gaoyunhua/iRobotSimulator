@@ -9,12 +9,14 @@ using namespace std;
 
 class House
 {
-    char** house;
-    int rows;
-    int columns;
+
     Point docking = Point(-1, -1);
 
 public:
+    int rows;
+    int columns;
+    char** house;
+
     House(int houseRows, int houseColumns, char** _house);
     House(int rows, int columns);
     House(const House& aHouse);

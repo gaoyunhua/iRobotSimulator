@@ -3,6 +3,7 @@
 #include <string>
 #include <cstdlib>
 #include "FileReader.h"
+#include "FileLister.h"
 
 using namespace std;
 
@@ -150,7 +151,53 @@ House FileReader::ReadHouse() {
 }
 
 
-static FilreReader::House ReadHouses(string dirPath)
+House* FileReader::ReadHouses(string dirPath)
 {
+    string fixedDirPath = dirPath;
+    if (dirPath.empty())
+    {
+        fixedDirPath = "./houses/";
+    }
 
+    HousesLister housesLister = HousesLister(fixedDirPath);
+    vector<string> houseFileNames = housesLister.getFilesList();
+
+    for(auto& a : houseFileNames)
+        cout << a << endl;
+    //TODO: read several houses
+    House* h = FileReader::input(houseFileNames[0]);
+    return h;
+}
+
+House* FileReader::input(string filePath)
+{
+    cout << "Reading house from file: " + filePath + " into class House" << endl;
+    ifstream fin(filePath);
+
+    string name, desc;
+    int rows, cols;
+
+    getline(fin, name);
+    getline(fin, desc);
+    fin >> rows;
+    fin >> cols;
+    fin.ignore();
+
+//    House house = House(rows, cols);
+
+    char** hh = new char*[rows];
+    for (int i = 0; i < rows; i++)
+    {
+        hh[i] = new char[cols];
+    }
+
+    for (int i = 0; i < rows; i++)
+    {
+        char* row = hh[i];
+        string a = (string)row;
+        getline(fin, a);
+        strncpy(row, a.c_str(), cols);
+    }
+    House* a = new House(rows, cols, hh);
+    return a;
 }

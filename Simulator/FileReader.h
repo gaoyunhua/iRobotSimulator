@@ -17,11 +17,12 @@ private:
     static map<string, int> DefaultConfig();
     static pair<int, string> GetFilePath(string dirPath, string fileName);
     static void PrintStringVector(const vector<string>& vec);
+    static House* input(string filePath);
 
 public:
     static map<string,int> ReadConfig(string dirPath);
     static House ReadHouse();
-    static House ReadHouses(string dirPath);
+    static House* ReadHouses(string dirPath);
 };
 
 
