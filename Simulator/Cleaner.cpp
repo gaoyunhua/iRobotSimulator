@@ -1,7 +1,5 @@
 
 #include "Cleaner.h"
-#include "Direction.h"
-#include "Point.h"
 
 CleanerResult Cleaner::clean()
 {

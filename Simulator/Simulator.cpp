@@ -4,22 +4,14 @@
 #include "Cleaner.h"
 #include "NaiveAlgorithm.h"
 
-static const int NumberOfConfigParams = 5;
 static const string UsageMessage = "Usage: simulator [-config <config path>] [-house_path <house path>] [-algorithm_path <algorithm path>]";
 
 void Simulator::Simulate(int argc, const char * argv[])
 {
     map<string,int> config;
 
-    string configParamPath = ParseConfig(argc, argv);
+    string configParamPath = ParseConfigParam(argc, argv);
     config = FileReader::ReadConfig(configParamPath);
-
-    if (config.size() != NumberOfConfigParams)
-    {
-        cout << UsageMessage << endl;
-        return;
-    }
-
 
     House house = FileReader::ReadHouse();
     Point robotLocation = house.findDocking();
@@ -35,10 +27,16 @@ void Simulator::Simulate(int argc, const char * argv[])
     config.clear();
 }
 
-string Simulator::ParseConfig(int argc, const char* argv[])
+string Simulator::ParseConfigParam(int argc, const char **argv)
 {
     string ConfigParamPrefix = "-config";
     return ParseParam(ConfigParamPrefix, argc, argv);
+}
+
+string Simulator::ParseHouseParam(int argc, const char **argv)
+{
+    string paramPrefix = "-house_path";
+    return ParseParam(paramPrefix, argc, argv);
 }
 
 string Simulator::ParseParam(string paramPrefix, int argc, const char* argv[])

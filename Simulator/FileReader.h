@@ -21,6 +21,7 @@ private:
 public:
     static map<string,int> ReadConfig(string dirPath);
     static House ReadHouse();
+    static House ReadHouses(string dirPath);
 };
 
 

@@ -11,7 +11,8 @@ class Simulator
 public:
     void Simulate(int argc, const char * argv[]);
     int Score(CleanerResult cleanerResult);
-    string ParseConfig(int argc, const char* argv[]);
+    string ParseConfigParam(int argc, const char **argv);
+    string ParseHouseParam(int argc, const char **argv);
     string ParseParam(string paramPrefix, int argc, const char* argv[]);
 };
 

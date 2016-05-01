@@ -1,6 +1,5 @@
 #include <fstream>
 #include <map>
-#include <stdexcept>
 #include <string>
 #include <cstdlib>
 #include "FileReader.h"
@@ -44,7 +43,6 @@ pair<int, string> FileReader::GetFilePath(string dirPath, string fileName) {
 }
 
 map<string, int> FileReader::ReadConfig(string dirPath) {
-    //TODO: Add read permissions check
     pair<int, string> filePathPair = GetFilePath(dirPath, "config.ini");
 
     if (filePathPair.first == -1) {
@@ -149,4 +147,10 @@ House FileReader::ReadHouse() {
 
     House completeHouse = House(19, 81, house);
     return completeHouse;
+}
+
+
+static FilreReader::House ReadHouses(string dirPath)
+{
+
 }
