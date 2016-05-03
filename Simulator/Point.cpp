@@ -8,19 +8,23 @@ void Point::move(Direction d)
     {
         case 0:
         {
-            x++;
+            y++;
+            break;
         }
         case 1:
         {
-            x--;
+            y--;
+            break;
         }
         case 2:
         {
-            y++;
+            x++;
+            break;
         }
         case 3:
         {
-            y--;
+            x--;
+            break;
         }
         default:
             break;
@@ -37,23 +41,28 @@ void Point::move(Point& p)
 Point Point::GetPointByDirection(const Point& point, Direction d)
 {
     Point localPoint = Point(point);
-    switch ((int)d)
+    int directionInt = (int)d;
+    switch (directionInt)
     {
         case 0:
         {
-            localPoint.x++;
+            localPoint.y++;
+            break;
         }
         case 1:
         {
-            localPoint.x--;
+            localPoint.y--;
+            break;
         }
         case 2:
         {
-            localPoint.y++;
+            localPoint.x++;
+            break;
         }
         case 3:
         {
-            localPoint.y--;
+            localPoint.x--;
+            break;
         }
         default:
             break;

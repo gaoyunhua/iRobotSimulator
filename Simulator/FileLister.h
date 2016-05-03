@@ -111,27 +111,3 @@ void printStringVector(const vector<string> &vec) {
     }
     cout << endl;
 }
-
-
-//int main(int argc, char **argv) {
-//    string basePath = "";
-//    if (argc > 1)
-//        basePath = argv[0];
-//
-//    basePath = "dir";
-//    system(("mkdir " + basePath).c_str());
-//    for (int i = 0; i < 100; ++i) {
-//        fclose(fopen((basePath + "/" + "house" + std::to_string(i) + ".house").c_str(), "w"));
-//        fclose(fopen((basePath + "/" + "algorithm" + std::to_string(i) + ".so").c_str(), "w"));
-//        fclose(fopen((basePath + "/" + "junk" + std::to_string(i) + ".junk").c_str(), "w"));
-//    }
-//
-//    HousesLister housesLister = HousesLister(basePath);
-//    AlgorithmsLister algorithmsLister = AlgorithmsLister(basePath);
-//    cout << "Houses: " << endl;
-//    printStringVector(housesLister.getFilesList());
-//    cout << endl;
-//    cout << "Algorithms: " << endl;
-//    printStringVector(algorithmsLister.getFilesList());
-//    return 0;
-//}

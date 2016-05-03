@@ -1,10 +1,10 @@
-
+#include <iomanip>
+#include <sstream>
 #include "Simulator.h"
 #include "FileReader.h"
 #include "Cleaner.h"
 #include "NaiveAlgorithm.h"
-
-static const string UsageMessage = "Usage: simulator [-config <config path>] [-house_path <house path>] [-algorithm_path <algorithm path>]";
+#include "GreedyAlgorithm.h"
 
 void Simulator::Simulate(int argc, const char * argv[])
 {
@@ -14,18 +14,109 @@ void Simulator::Simulate(int argc, const char * argv[])
     config = FileReader::ReadConfig(configParamPath);
 
     string houseParamPath = ParseHouseParam(argc, argv);
-    House& house = *(FileReader::ReadHouses(houseParamPath));
+    auto readHouses = FileReader::ReadHouses(houseParamPath);
+    vector<House*> houses = readHouses.first;
+    vector<pair<string,string> > errorHouses = readHouses.second;
 
-    //House Househouse = FileReader::ReadHouse();
-    Point robotLocation = house.findDocking();
-    Sensor s(house, robotLocation);
-    NaiveAlgorithm n(s);
-    AbstractAlgorithm& algorithm = n;
+    if (!houses.size())
+    {
+        cout << "All house files in target folder " + houseParamPath + " cannot be opened or are invalid:" << endl;
+        for (auto& errorHouse : errorHouses)
+        {
+            cout << errorHouse.first + ": " + errorHouse.second << endl;
+        }
+        exit(0);
+    }
 
-    Cleaner cleaner(algorithm, s, house, robotLocation, config);
-    CleanerResult result = cleaner.clean();
+    unsigned long algosCount = 2;
 
-    cout << Score(result) << endl;
+    vector<vector<int> > algosScores(algosCount, vector<int>(0));
+
+    int k = 0;
+    for(House* housePtr: houses)
+    {
+        House& house = *housePtr;
+        Point robotLocation = house.findDocking();
+        Sensor s(house, robotLocation);
+
+        vector<AbstractAlgorithm*> algorithms;
+
+        AbstractAlgorithm* gAlgorithm = new GreedyAlgorithm(s);
+        AbstractAlgorithm* algorithm = new NaiveAlgorithm(s);
+
+        algorithms.push_back(gAlgorithm);
+        algorithms.push_back(algorithm);
+
+        vector<Cleaner> cleaners;
+
+        for (auto& algo : algorithms)
+        {
+            House* houseCopy =  new House(house);
+            Cleaner cleaner(*algo, s, houseCopy, robotLocation, config);
+            cleaner.clean();
+            cleaners.push_back(cleaner);
+        }
+
+        for (int steps = 0; steps < house.maxSteps; steps++)
+        {
+            for (int i = 0 ; i < cleaners.size(); i++)
+            {
+                cleaners[i].Step();
+            }
+        }
+
+        for (int i = 0; i < cleaners.size(); i++)
+        {
+            algosScores[i].push_back(Score(cleaners[i].GetResult()));
+        }
+    }
+
+    vector<string> results;
+    unsigned long prefixLength = (15 + 10 * (houses.size() + 1));
+    string prefix(prefixLength, '-');
+    results.push_back(prefix);
+
+    string header = "|             ";
+    for (int i = 0; i < houses.size(); i++)
+    {
+        ostringstream ss;
+        ss << setw( 3 ) << setfill( '0' ) << to_string(i+1);
+
+        header += "|" + ss.str() + "      ";
+    }
+    header += "|AVG      |";
+    results.push_back(header);
+
+    for (int i = 0; i < algosScores.size(); i++)
+    {
+        string algoScoreString = i == 0 ? "|306543083_G_ " : "|306543083_N_ ";
+        int algoAvg = 0;
+        for (int algoscore : algosScores[i])
+        {
+            algoAvg += algoscore;
+            ostringstream ss;
+            ss << setw( 9 ) << setfill( ' ' ) << to_string(algoscore);
+            algoScoreString += "|" + ss.str();
+        }
+
+        ostringstream ss;
+        string avg = to_string(((float)(algoAvg)) / houses.size());
+        string sortAvg = avg.substr(0, strcspn(avg.c_str(),".") + 3);
+        ss << setw( 9 ) << setfill( ' ' ) << sortAvg;
+        algoScoreString += "|" + ss.str() + "|";
+        results.push_back(algoScoreString);
+    }
+    results.push_back(prefix);
+
+    //TODO: about to finish
+    //TODO: revise scoring function
+    for (auto& result : results)
+        cout << result << endl;
+
+    for (auto& invalidHouse : errorHouses)
+    {
+        cout << invalidHouse.first + ": " + invalidHouse.second << endl;
+    }
 
     config.clear();
 }

@@ -10,6 +10,8 @@
 
 using namespace std;
 
+class ReadHouses;
+
 class FileReader
 {
 
@@ -18,11 +20,12 @@ private:
     static pair<int, string> GetFilePath(string dirPath, string fileName);
     static void PrintStringVector(const vector<string>& vec);
     static House* input(string filePath);
+    static void fixHouse(House* h);
+    static string isValidHouse(House* h);
 
 public:
     static map<string,int> ReadConfig(string dirPath);
-    static House ReadHouse();
-    static House* ReadHouses(string dirPath);
+    static pair<vector<House*>,vector<pair<string,string> > > ReadHouses(string dirPath);
 };
 
 

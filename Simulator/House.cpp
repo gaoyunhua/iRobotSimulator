@@ -10,6 +10,9 @@ House::House(int _rows, int _columns, char** _house)
 {
     rows = _rows;
     columns = _columns;
+    if (rows <= 0 || columns <= 0)
+        return;
+
     house = new char*[_rows];
     for (int i = 0; i < _rows; i++)
     {
@@ -25,6 +28,9 @@ House::House(int houseRows, int houseColumns)
 {
     rows = houseRows;
     columns = houseColumns;
+    if (rows <= 0 || columns <= 0)
+        return;
+
     house = new char*[houseRows];
     for (int i = 0; i < rows; i++)
     {
@@ -34,11 +40,21 @@ House::House(int houseRows, int houseColumns)
 
 House::House(const House& aHouse)
 {
-    House h(aHouse.rows, aHouse.columns);
-    rows = h.rows;
-    columns = h.columns;
-    house = h.house;
-    docking = h.docking;
+    rows = aHouse.rows;
+    columns = aHouse.columns;
+    if (rows <= 0 || columns <= 0)
+        return;
+
+    house = new char*[rows];
+    for (int i = 0; i < rows; i++)
+    {
+        house[i] = new char[columns];
+    }
+
+    docking = aHouse.docking;
+
+    if (rows <= 0 || columns <= 0)
+        return;
 
     for (int i = 0; i < rows; i++)
         for (int j = 0; j < columns; j++)
@@ -51,12 +67,15 @@ House House::operator=(House & h) {
 
 House::~House()
 {
+    if (rows <= 0)
+        return;
+
     for (int i=0; i < rows; i++)
         delete [] house[i];
     delete [] house;
 }
 
-bool House::isWall(Point point)
+bool House::isWall(Point point) const
 {
     if (!isPointValid(point))
         return true;
@@ -65,7 +84,7 @@ bool House::isWall(Point point)
     return item == House::WALL;
 }
 
-bool House::isPointValid(Point point)
+bool House::isPointValid(Point point) const
 {
     if (point.getX() < 0 || point.getY() < 0 || point.getX() >= rows || point.getY() >= columns)
         return false;
@@ -73,7 +92,7 @@ bool House::isPointValid(Point point)
     return true;
 }
 
-int House::dirtLevel(Point point)
+int House::dirtLevel(Point point) const
 {
     char spot = this->point(point);
     if (spot < 49 || spot > 57) // spot < '0' + 1 || spot > '9' => not dust
@@ -124,7 +143,7 @@ int House::cleanOneUnit(Point& point)
     return spot - unitValue;
 }
 
-char House::point(Point point)
+char House::point(Point point) const
 {
     return house[point.getX()][point.getY()];
 }

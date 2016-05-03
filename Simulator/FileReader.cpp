@@ -7,6 +7,8 @@
 
 using namespace std;
 
+static const string usageMessage = "Usage: simulator [-config <config path>] [-house_path <house path>] [-algorithm_path <algorithm path>]";
+
 /*
  * Returns a pair representing the File Read state.
  * int key = status code
@@ -48,7 +50,7 @@ map<string, int> FileReader::ReadConfig(string dirPath) {
 
     if (filePathPair.first == -1) {
         if (filePathPair.second.empty()) {
-            string usageMessage = "Usage: simulator [-config <config path>] [-house_path <house path>] [-algorithm_path <algorithm path>]";
+
             cout << usageMessage << endl;
             exit(0);
         }
@@ -103,55 +105,14 @@ void FileReader::PrintStringVector(const vector<string> &vec) {
 
 map<string, int> FileReader::DefaultConfig() {
     map<string, int> configurationMap =
-            {{"MaxSteps",               -1},
-             {"MaxStepsAfterWinner",    -1},
+            {{"MaxStepsAfterWinner",    -1},
              {"BatteryCapacity",        -1},
              {"BatteryConsumptionRate", -1},
              {"BatteryRechargeRate",    -1}};
     return configurationMap;
 }
 
-House FileReader::ReadHouse() {
-    enum {
-        rows = 19, cols = 80
-    };
-    char houseStructure[rows][cols + 1] = {
-            //             1         2         3         4         5         6         7
-            //   01234567890123456789012345678901234567890123456789012345678901234567890123456789
-            "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW", // 0
-            "W  99  8D5             1234321                                                 W", // 1
-            "W  99      WWWWWWW     1234321                     W                       1   W", // 2
-            "W              W                                   W   555                 2   W", // 3
-            "W              W                                   W   555                 3   W", // 4
-            "W              W           WWWWWWWWWWWWWWWWWWWWWWWWW                       4   W", // 5
-            "W              W                                                           5   W", // 6
-            "W              W                                                           6   W", // 7
-            "W                          WWWWWWWWWWWWWWWWWWWWWW  WWWWWWW                 7   W", // 8
-            "W         1         2         3         4         5W 999 W  6         7        W", // 9
-            "W              W           444                     W 999 W                 9   W", // 10
-            "W              W           444                     W 999 W                 8   W", // 11
-            "W              W                                   W     W                 7   W", // 12
-            "W              W                                   WW   WW                 6   W", // 13
-            "W              W                                    W   W                  5   W", // 14
-            "W              W                                                           4   W", // 15
-            "W              W                                                           3   W", // 16
-            "W              W                                                               W", // 17
-            "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW" // 18
-    };
-
-    char **house = new char *[rows];
-    for (int i = 0; i < rows; i++) {
-        house[i] = new char[cols];
-        for (int j = 0; j < cols; j++)
-            house[i][j] = houseStructure[i][j];
-    }
-
-    House completeHouse = House(19, 81, house);
-    return completeHouse;
-}
-
-
-House* FileReader::ReadHouses(string dirPath)
+pair<vector<House*>,vector<pair<string,string>>> FileReader::ReadHouses(string dirPath)
 {
     string fixedDirPath = dirPath;
     if (dirPath.empty())
@@ -162,42 +123,138 @@ House* FileReader::ReadHouses(string dirPath)
     HousesLister housesLister = HousesLister(fixedDirPath);
     vector<string> houseFileNames = housesLister.getFilesList();
 
-    for(auto& a : houseFileNames)
-        cout << a << endl;
-    //TODO: read several houses
-    House* h = FileReader::input(houseFileNames[0]);
-    return h;
+    if (!houseFileNames.size())
+    {
+        cout << usageMessage << endl;
+        exit(0);
+    }
+
+    vector<House*> houses;
+    vector<pair<string,string>> errorHouses;
+    for(auto& houseFileName : houseFileNames)
+    {
+        pair<int,string> filePathPair = FileReader::GetFilePath("", houseFileName);
+        if (filePathPair.first == -1) {
+            if (filePathPair.second.empty())
+            {
+                errorHouses.push_back(pair<string,string>(houseFileName, "unknown error reading house file"));
+            }
+            else
+            {
+                errorHouses.push_back(pair<string,string>(houseFileName, filePathPair.second));
+            }
+        }
+        else
+        {
+            House *h = FileReader::input(filePathPair.second);
+            string houseError = FileReader::isValidHouse(h);
+            if (houseError.empty())
+                houses.push_back(h);
+            else
+            {
+                errorHouses.push_back(pair<string,string>(houseFileName, houseError));
+            }
+        }
+    }
+
+    return pair<vector<House*>,vector<pair<string,string>>>(houses, errorHouses);
 }
 
 House* FileReader::input(string filePath)
 {
-    cout << "Reading house from file: " + filePath + " into class House" << endl;
+//    cout << "Reading house from file: " + filePath << endl;
     ifstream fin(filePath);
 
-    string name, desc;
+    string name, steps;
     int rows, cols;
 
     getline(fin, name);
-    getline(fin, desc);
+    getline(fin, steps);
     fin >> rows;
     fin >> cols;
     fin.ignore();
 
-//    House house = House(rows, cols);
-
-    char** hh = new char*[rows];
-    for (int i = 0; i < rows; i++)
+    House* house;
+    if (rows > 0 && cols > 0)
     {
-        hh[i] = new char[cols];
+        char** hh = new char*[rows];
+        for (int i = 0; i < rows; i++)
+        {
+            hh[i] = new char[cols];
+        }
+
+        for (int i = 0; i < rows; i++)
+        {
+            char* row = hh[i];
+            string rowString = (string)row;
+            getline(fin, rowString);
+            strncpy(row, rowString.c_str(), (size_t)cols);
+        }
+
+        house = new House(rows, cols, hh);
+
+        for (int i = 0; i < rows; i++)
+            delete [] hh[i];
+        delete [] hh;
+
+        house->name = name;
+        house->maxSteps = atoi(steps.c_str());
+
+        FileReader::fixHouse(house);
+        return house;
     }
 
-    for (int i = 0; i < rows; i++)
+    house = new House(rows, cols);
+    return house;
+}
+
+void FileReader::fixHouse(House* h)
+{
+    for (int i = 0; i < h->rows; i++)
     {
-        char* row = hh[i];
-        string a = (string)row;
-        getline(fin, a);
-        strncpy(row, a.c_str(), cols);
+        for (int j = 0; j < h->columns; j++)
+        {
+            if (i == 0 || i == h->rows-1)
+            {
+                h->house[i][j] = 'W';
+                continue;
+            }
+
+            if (j == 0 || j == h->columns-1)
+            {
+                h->house[i][j] = 'W';
+//                continue;
+            }
+
+//            if (h->house[i][j] == '')
+//            {
+//                h->house[i][j] = ' ';
+//            }
+        }
     }
-    House* a = new House(rows, cols, hh);
-    return a;
+}
+
+string FileReader::isValidHouse(House* h)
+{
+    //line OR col OR maxSteps number le zero
+    if (h->rows <= 0)
+        return "line number 3 in house file shall be a positive number, found: "+ to_string(h->rows);
+    if (h->columns <= 0)
+        return "line number 4 in house file shall be a positive number, found: "+ to_string(h->columns);
+    if (h->maxSteps <= 0)
+        return "line number 2 in house file shall be a positive number, found: "+ to_string(h->maxSteps);
+
+    //# of docks
+    int numOfDocks = 0;
+    for (int i = 0; i < h->rows; i++)
+        for (int j = 0; j < h->columns; j++)
+            if (h->house[i][j] == 'D')
+                numOfDocks++;
+
+    if (numOfDocks == 0)
+        return "missing docking station";
+    if (numOfDocks > 1)
+        return "too many docking stations";
+
+    return "";
 }

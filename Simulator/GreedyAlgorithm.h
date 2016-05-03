@@ -1,32 +1,26 @@
-
-#ifndef SIMULATOR_NAIVEALGORITHM_H
-#define SIMULATOR_NAIVEALGORITHM_H
-
 #include <vector>
+#include "SensorInformation.h"
+#include "Direction.h"
 #include "AbstractAlgorithm.h"
-#include "House.h"
-#include "AbstractSensor.h"
 
-class NaiveAlgorithm : public AbstractAlgorithm
+class GreedyAlgorithm: public AbstractAlgorithm
 {
     AbstractSensor& sensor;
 
 private:
     vector<Direction> stepsList;
-    void saveStep(Direction d);
     int stepsLeft;
     int steps;
 
+    void saveStep(Direction d);
+
 public:
-    NaiveAlgorithm(AbstractSensor& _sensor) : sensor(_sensor){}
+    GreedyAlgorithm(AbstractSensor& _sensor) : sensor(_sensor){}
 
     virtual void setSensor(const AbstractSensor& sensor);
     virtual Direction step();
     virtual void setConfiguration(map<string, int> config);
     virtual void aboutToFinish(int stepsTillFinishing);
     virtual Direction getDirection(const SensorInformation &locationInfo);
-    virtual ~NaiveAlgorithm() {}
+    virtual ~GreedyAlgorithm() {}
 };
-
-
-#endif //SIMULATOR_NAIVEALGORITHM_H

@@ -16,6 +16,9 @@ public:
     int rows;
     int columns;
     char** house;
+    string desc;
+    string name;
+    int maxSteps;
 
     House(int houseRows, int houseColumns, char** _house);
     House(int rows, int columns);
@@ -25,14 +28,14 @@ public:
 
     enum ItemType {DOCKING = 'D', WALL = 'W'};
 
-    char point(Point point);
+    char point(Point point) const;
     void setPoint(Point point, char value);
     Point findDocking();
     Point find(char itemType);
-    bool isPointValid(Point p);
+    bool isPointValid(Point p) const;
 
-    bool isWall(Point point);
-    int dirtLevel(Point point);
+    bool isWall(Point point) const;
+    int dirtLevel(Point point) const;
     int cleanOneUnit(Point& point);
     int amountOfDirt();
 };

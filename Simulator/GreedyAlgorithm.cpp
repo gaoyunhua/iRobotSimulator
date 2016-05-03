@@ -1,16 +1,16 @@
 
+#include "GreedyAlgorithm.h"
 #include <cstdlib>
 #include <string>
-#include "NaiveAlgorithm.h"
 
 using namespace std;
 
-void NaiveAlgorithm::setSensor(const AbstractSensor& _sensor)
+void GreedyAlgorithm::setSensor(const AbstractSensor& _sensor)
 {
     sensor = _sensor;
 }
 
-Direction NaiveAlgorithm::step()
+Direction GreedyAlgorithm::step()
 {
     SensorInformation locationInfo = sensor.sense();
     steps++;
@@ -45,41 +45,53 @@ Direction NaiveAlgorithm::step()
     return getDirection(locationInfo);
 }
 
-Direction NaiveAlgorithm::getDirection(const SensorInformation &locationInfo)
+Direction GreedyAlgorithm::getDirection(const SensorInformation &locationInfo)
 {
 
 //Direction {East, West, South, North, Stay};
     Direction d;
+    Direction previousDirection = stepsList.size() > 0 ? stepsList.back() : Direction::West;
     if (locationInfo.dirtLevel > 0)
+    {
         d = Direction::Stay;
-    else if (!locationInfo.isWall[3] && stepsList.back() != Direction::South)
+    }
+    else if (!locationInfo.isWall[(int)previousDirection])
+    {
+        d = previousDirection;
+    }
+    else if (!locationInfo.isWall[3] && previousDirection != Direction::South) {
         d = Direction::North;
-    else if (!locationInfo.isWall[1] && stepsList.back() != Direction::East)
-        d =  Direction::West;
-    else if (!locationInfo.isWall[2] && stepsList.back() != Direction::North)
+    }
+    else if (!locationInfo.isWall[1] && previousDirection != Direction::East) {
+        d = Direction::West;
+    }
+    else if (!locationInfo.isWall[2] && previousDirection != Direction::North) {
         d = Direction::South;
-    else if (!locationInfo.isWall[0] && stepsList.back() != Direction::West)
+    }
+    else if (!locationInfo.isWall[0] && previousDirection != Direction::West) {
         d = Direction::East;
+    }
     else
         d = Direction::Stay;
+
 
     saveStep(d);
     return d;
 }
 
-void NaiveAlgorithm::setConfiguration(map<string, int> _config)
+void GreedyAlgorithm::setConfiguration(map<string, int> _config)
 {
     stepsLeft = 0;
     steps = 0;
-    stepsList.push_back(Direction::Stay);
+//    stepsList.push_back(Direction::Stay);
 }
 
-void NaiveAlgorithm::aboutToFinish(int stepsTillFinishing)
+void GreedyAlgorithm::aboutToFinish(int stepsTillFinishing)
 {
     stepsLeft = stepsTillFinishing;
 }
 
-void NaiveAlgorithm::saveStep(Direction d)
+void GreedyAlgorithm::saveStep(Direction d)
 {
     stepsList.push_back(d);
 }

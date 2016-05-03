@@ -13,22 +13,28 @@ class Cleaner
 {
     AbstractAlgorithm& algorithm;
     Sensor& sensor;
-    House& house;
+    House* house;
     const map<string, int>& configuration;
     Point& robotLocation;
 
 public:
-    Cleaner(AbstractAlgorithm& _algorithm, Sensor& _sensor, House& _house, Point& _robotLocation , map<string,int>& _config) :
+    Cleaner(AbstractAlgorithm& _algorithm, Sensor& _sensor, House* _house, Point& _robotLocation , map<string,int>& _config) :
             algorithm(_algorithm), sensor(_sensor), house(_house), robotLocation(_robotLocation), configuration(_config){}
 
-    CleanerResult clean();
+    void clean();
+    void Step();
+    CleanerResult GetResult();
     CleanerResult stopSimulation();
-
-    void TryReturnToDockFromPoint(Point point);
 
     void robotAtDock(int rechargeRate, Point &newRobotLocation, int &steps, int &batteryLevel);
 
     void performStep(int &steps, int &dirtCleaned, int &batteryLevel);
+
+private:
+    void printHouse(int iRob, int jRob);
+    int steps, dirtCleaned, sumOfDirt, maxSteps, batteryLevel, rechargeRate;
+    bool didStopSimulation;
+
 };
 
 
