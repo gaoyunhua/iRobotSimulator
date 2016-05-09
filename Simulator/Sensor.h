@@ -10,6 +10,8 @@ class Sensor : public AbstractSensor
 
 public:
     Sensor(const House& _house, Point& _robotLocation) : house(_house), robotLocation(_robotLocation){}
+    Sensor(const Sensor& _sensor) : house(_sensor.house), robotLocation(_sensor.robotLocation){}
+
     SensorInformation sense() const;
     ~Sensor();
 };

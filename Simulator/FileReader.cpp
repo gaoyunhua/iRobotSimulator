@@ -103,16 +103,18 @@ void FileReader::PrintStringVector(const vector<string> &vec) {
     cout << endl;
 }
 
-map<string, int> FileReader::DefaultConfig() {
-    map<string, int> configurationMap =
-            {{"MaxStepsAfterWinner",    -1},
-             {"BatteryCapacity",        -1},
-             {"BatteryConsumptionRate", -1},
-             {"BatteryRechargeRate",    -1}};
+map<string, int> FileReader::DefaultConfig()
+{
+    map<string, int> configurationMap;
+    configurationMap.clear();
+    configurationMap["MaxStepsAfterWinner"] = -1;
+    configurationMap["BatteryCapacity"] = -1;
+    configurationMap["BatteryConsumptionRate"] = -1;
+    configurationMap["BatteryRechargeRate"] = -1;
     return configurationMap;
 }
 
-pair<vector<House*>,vector<pair<string,string>>> FileReader::ReadHouses(string dirPath)
+pair<vector<House*>,vector<pair<string,string> > > FileReader::ReadHouses(string dirPath)
 {
     string fixedDirPath = dirPath;
     if (dirPath.empty())
@@ -130,7 +132,7 @@ pair<vector<House*>,vector<pair<string,string>>> FileReader::ReadHouses(string d
     }
 
     vector<House*> houses;
-    vector<pair<string,string>> errorHouses;
+    vector<pair<string,string> > errorHouses;
     for(auto& houseFileName : houseFileNames)
     {
         pair<int,string> filePathPair = FileReader::GetFilePath("", houseFileName);
@@ -157,7 +159,7 @@ pair<vector<House*>,vector<pair<string,string>>> FileReader::ReadHouses(string d
         }
     }
 
-    return pair<vector<House*>,vector<pair<string,string>>>(houses, errorHouses);
+    return pair<vector<House*>,vector<pair<string,string> > >(houses, errorHouses);
 }
 
 House* FileReader::input(string filePath)

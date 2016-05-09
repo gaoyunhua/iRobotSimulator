@@ -12,13 +12,15 @@ void Cleaner::clean()
     didStopSimulation = false;
 
     algorithm.setConfiguration(configuration);
-    algorithm.setSensor(sensor);
+    AbstractSensor& a = *sensor;
+    algorithm.setSensor(a);
 }
 
 void Cleaner::Step()
 {
-//    printHouse(robotLocation.getX(), robotLocation.getY());
+    printHouse(robotLocation.getX(), robotLocation.getY());
     Direction moveDirection = algorithm.step();
+
 //    if ((int)moveDirection == 4)
 //    {
 //        didStopSimulation = true;
@@ -26,6 +28,8 @@ void Cleaner::Step()
 //    }
 
     Point newRobotLocation = Point::GetPointByDirection(robotLocation, moveDirection);
+    cout << "Moving:(" + to_string(robotLocation.getX()) + "," + to_string(robotLocation.getY())  + ")-->(" + to_string(newRobotLocation.getX()) + "," + to_string(newRobotLocation.getY()) + ")" << endl;
+    cout << endl;
     if (newRobotLocation.equals(house->findDocking()))
     {
         robotAtDock(rechargeRate, newRobotLocation, steps, batteryLevel);
@@ -61,8 +65,7 @@ void Cleaner::robotAtDock(int rechargeRate,Point &newRobotLocation, int &steps, 
 {
     int capacity = configuration.at("BatteryCapacity");
     batteryLevel = min(capacity, batteryLevel + rechargeRate);
-    steps++;
-    robotLocation.move(newRobotLocation);
+    cout << "Robot At Dock" << endl;
 }
 
 CleanerResult Cleaner::stopSimulation()

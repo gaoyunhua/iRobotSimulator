@@ -12,13 +12,13 @@
 class Cleaner
 {
     AbstractAlgorithm& algorithm;
-    Sensor& sensor;
+    AbstractSensor* sensor;
     House* house;
     const map<string, int>& configuration;
     Point& robotLocation;
 
 public:
-    Cleaner(AbstractAlgorithm& _algorithm, Sensor& _sensor, House* _house, Point& _robotLocation , map<string,int>& _config) :
+    Cleaner(AbstractAlgorithm& _algorithm, AbstractSensor* _sensor, House* _house, Point& _robotLocation , map<string,int>& _config) :
             algorithm(_algorithm), sensor(_sensor), house(_house), robotLocation(_robotLocation), configuration(_config){}
 
     void clean();

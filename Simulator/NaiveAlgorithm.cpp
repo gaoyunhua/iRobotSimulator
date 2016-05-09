@@ -7,12 +7,12 @@ using namespace std;
 
 void NaiveAlgorithm::setSensor(const AbstractSensor& _sensor)
 {
-    sensor = _sensor;
+    sensor = &_sensor;
 }
 
 Direction NaiveAlgorithm::step()
 {
-    SensorInformation locationInfo = sensor.sense();
+    SensorInformation locationInfo = sensor->sense();
     steps++;
     stepsLeft--;
     if (stepsLeft > 0)

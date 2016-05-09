@@ -1,18 +1,25 @@
 
-#include "GreedyAlgorithm.h"
+#include "_306543083_G.h"
+#include "AlgorithmRegistration.h"
 #include <cstdlib>
 #include <string>
 
-using namespace std;
-
-void GreedyAlgorithm::setSensor(const AbstractSensor& _sensor)
+REGISTER_ALGORITHM (_306543083_G)
 {
-    sensor = _sensor;
+    return _306543083_G.uniq
 }
 
-Direction GreedyAlgorithm::step()
+using namespace std;
+
+void _306543083_G::setSensor(const AbstractSensor& _sensor)
 {
-    SensorInformation locationInfo = sensor.sense();
+    sensor = &_sensor;
+}
+
+Direction _306543083_G::step()
+{
+    //enum class Direction {East, West, South, North, Stay};
+    SensorInformation locationInfo = sensor->sense();
     steps++;
     stepsLeft--;
     if (stepsLeft > 0)
@@ -45,7 +52,7 @@ Direction GreedyAlgorithm::step()
     return getDirection(locationInfo);
 }
 
-Direction GreedyAlgorithm::getDirection(const SensorInformation &locationInfo)
+Direction _306543083_G::getDirection(const SensorInformation &locationInfo)
 {
 
 //Direction {East, West, South, North, Stay};
@@ -79,19 +86,19 @@ Direction GreedyAlgorithm::getDirection(const SensorInformation &locationInfo)
     return d;
 }
 
-void GreedyAlgorithm::setConfiguration(map<string, int> _config)
+void _306543083_G::setConfiguration(map<string, int> _config)
 {
     stepsLeft = 0;
     steps = 0;
 //    stepsList.push_back(Direction::Stay);
 }
 
-void GreedyAlgorithm::aboutToFinish(int stepsTillFinishing)
+void _306543083_G::aboutToFinish(int stepsTillFinishing)
 {
     stepsLeft = stepsTillFinishing;
 }
 
-void GreedyAlgorithm::saveStep(Direction d)
+void _306543083_G::saveStep(Direction d)
 {
     stepsList.push_back(d);
 }

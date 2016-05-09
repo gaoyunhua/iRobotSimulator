@@ -24,6 +24,6 @@ set(SOURCE_FILES
         Sensor.h
     main.cpp
     Simulator.cpp
-    Simulator.h FileLister.h GreedyAlgorithm.cpp GreedyAlgorithm.h)
+    Simulator.h FileLister.h _306543083_G.cpp _306543083_G.h AlgorithmRegistration.h AlgorithmRegistration.cpp)
 
 add_executable(Simulator ${SOURCE_FILES})

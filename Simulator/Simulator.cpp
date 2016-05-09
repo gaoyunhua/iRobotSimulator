@@ -4,7 +4,7 @@
 #include "FileReader.h"
 #include "Cleaner.h"
 #include "NaiveAlgorithm.h"
-#include "GreedyAlgorithm.h"
+#include "_306543083_G.h"
 
 void Simulator::Simulate(int argc, const char * argv[])
 {
@@ -36,13 +36,11 @@ void Simulator::Simulate(int argc, const char * argv[])
     for(House* housePtr: houses)
     {
         House& house = *housePtr;
-        Point robotLocation = house.findDocking();
-        Sensor s(house, robotLocation);
 
         vector<AbstractAlgorithm*> algorithms;
 
-        AbstractAlgorithm* gAlgorithm = new GreedyAlgorithm(s);
-        AbstractAlgorithm* algorithm = new NaiveAlgorithm(s);
+        AbstractAlgorithm* gAlgorithm = new _306543083_G();
+        AbstractAlgorithm* algorithm = new NaiveAlgorithm();
 
         algorithms.push_back(gAlgorithm);
         algorithms.push_back(algorithm);
@@ -51,8 +49,10 @@ void Simulator::Simulate(int argc, const char * argv[])
 
         for (auto& algo : algorithms)
         {
+            Point* robotLocation = new Point(house.findDocking());
             House* houseCopy =  new House(house);
-            Cleaner cleaner(*algo, s, houseCopy, robotLocation, config);
+            Sensor* as = new Sensor(*houseCopy, *robotLocation);
+            Cleaner cleaner(*algo, as, houseCopy, *robotLocation, config);
             cleaner.clean();
             cleaners.push_back(cleaner);
         }

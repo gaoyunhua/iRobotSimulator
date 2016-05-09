@@ -9,7 +9,7 @@
 
 class NaiveAlgorithm : public AbstractAlgorithm
 {
-    AbstractSensor& sensor;
+    const AbstractSensor* sensor;
 
 private:
     vector<Direction> stepsList;
@@ -18,8 +18,6 @@ private:
     int steps;
 
 public:
-    NaiveAlgorithm(AbstractSensor& _sensor) : sensor(_sensor){}
-
     virtual void setSensor(const AbstractSensor& sensor);
     virtual Direction step();
     virtual void setConfiguration(map<string, int> config);
