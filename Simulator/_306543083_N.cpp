@@ -1,16 +1,22 @@
 
 #include <cstdlib>
 #include <string>
-#include "NaiveAlgorithm.h"
+#include "_306543083_N.h"
+#include "AlgorithmRegistration.h"
 
 using namespace std;
 
-void NaiveAlgorithm::setSensor(const AbstractSensor& _sensor)
+unique_ptr<AbstractAlgorithm> _306543083_N::make_unique()
+{
+    return unique_ptr<_306543083_N>(new _306543083_N());
+}
+
+void _306543083_N::setSensor(const AbstractSensor& _sensor)
 {
     sensor = &_sensor;
 }
 
-Direction NaiveAlgorithm::step()
+Direction _306543083_N::step()
 {
     SensorInformation locationInfo = sensor->sense();
     steps++;
@@ -45,7 +51,7 @@ Direction NaiveAlgorithm::step()
     return getDirection(locationInfo);
 }
 
-Direction NaiveAlgorithm::getDirection(const SensorInformation &locationInfo)
+Direction _306543083_N::getDirection(const SensorInformation &locationInfo)
 {
 
 //Direction {East, West, South, North, Stay};
@@ -67,19 +73,21 @@ Direction NaiveAlgorithm::getDirection(const SensorInformation &locationInfo)
     return d;
 }
 
-void NaiveAlgorithm::setConfiguration(map<string, int> _config)
+void _306543083_N::setConfiguration(map<string, int> _config)
 {
     stepsLeft = 0;
     steps = 0;
     stepsList.push_back(Direction::Stay);
 }
 
-void NaiveAlgorithm::aboutToFinish(int stepsTillFinishing)
+void _306543083_N::aboutToFinish(int stepsTillFinishing)
 {
     stepsLeft = stepsTillFinishing;
 }
 
-void NaiveAlgorithm::saveStep(Direction d)
+void _306543083_N::saveStep(Direction d)
 {
     stepsList.push_back(d);
 }
+
+REGISTER_ALGORITHM(_306543083_N)

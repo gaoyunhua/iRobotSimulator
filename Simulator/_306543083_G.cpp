@@ -4,12 +4,12 @@
 #include <cstdlib>
 #include <string>
 
-REGISTER_ALGORITHM (_306543083_G)
-{
-    return _306543083_G.uniq
-}
-
 using namespace std;
+
+unique_ptr<AbstractAlgorithm> _306543083_G::make_unique()
+{
+    return unique_ptr<_306543083_G>(new _306543083_G());
+}
 
 void _306543083_G::setSensor(const AbstractSensor& _sensor)
 {
@@ -102,3 +102,5 @@ void _306543083_G::saveStep(Direction d)
 {
     stepsList.push_back(d);
 }
+
+REGISTER_ALGORITHM (_306543083_G)

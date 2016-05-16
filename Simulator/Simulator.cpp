@@ -3,8 +3,9 @@
 #include "Simulator.h"
 #include "FileReader.h"
 #include "Cleaner.h"
-#include "NaiveAlgorithm.h"
-#include "_306543083_G.h"
+#include "AlgorithmLoader.h"
+//#include "_306543083_N.h"
+//#include "_306543083_G.h"
 
 void Simulator::Simulate(int argc, const char * argv[])
 {
@@ -28,22 +29,27 @@ void Simulator::Simulate(int argc, const char * argv[])
         exit(0);
     }
 
-    unsigned long algosCount = 2;
+    AlgorithmLoader& loader = AlgorithmLoader::getInstance();
+    loader.loadAlgorithm("/Users/Roni/Desktop/working/lib_306543083_G.so.dylib", "_306543083_G");
+    loader.loadAlgorithm("/Users/Roni/Desktop/working/lib_306543083_N.so.dylib", "_306543083_N");
 
-    vector<vector<int> > algosScores(algosCount, vector<int>(0));
+    vector<unique_ptr<AbstractAlgorithm> > algorithms = loader.getAlgorithms();
+    vector<string> algoNames = loader.getAlgorithmNames();
+
+    vector<vector<int> > algosScores(algoNames.size(), vector<int>(0));
 
     int k = 0;
     for(House* housePtr: houses)
     {
         House& house = *housePtr;
 
-        vector<AbstractAlgorithm*> algorithms;
+//        vector<AbstractAlgorithm*> algorithms;
 
-        AbstractAlgorithm* gAlgorithm = new _306543083_G();
-        AbstractAlgorithm* algorithm = new NaiveAlgorithm();
+//        AbstractAlgorithm* gAlgorithm = new _306543083_G();
+//        AbstractAlgorithm* algorithm = new _306543083_N();
 
-        algorithms.push_back(gAlgorithm);
-        algorithms.push_back(algorithm);
+//        algorithms.push_back(gAlgorithm);
+//        algorithms.push_back(algorithm);
 
         vector<Cleaner> cleaners;
 

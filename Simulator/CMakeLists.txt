@@ -1,11 +1,9 @@
 cmake_minimum_required(VERSION 3.5)
 project(Simulator)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 
 set(SOURCE_FILES
-        NaiveAlgorithm.cpp
-        NaiveAlgorithm.h
         Cleaner.cpp
         Cleaner.h
         CleanerResult.cpp
@@ -24,6 +22,18 @@ set(SOURCE_FILES
         Sensor.h
     main.cpp
     Simulator.cpp
-    Simulator.h FileLister.h _306543083_G.cpp _306543083_G.h AlgorithmRegistration.h AlgorithmRegistration.cpp)
+    Simulator.h FileLister.h AlgorithmLoader.cpp AlgorithmLoader.h)
+
+set(G_FILES _306543083_G.cpp _306543083_G.h _306543083_G.cpp AlgorithmRegistration.h AlgorithmRegistration.cpp Direction.h AbstractAlgorithm.h SensorInformation.h AlgorithmLoader.cpp AlgorithmLoader.h)
+set(N_FILES _306543083_N.cpp _306543083_N.h _306543083_N.cpp AlgorithmRegistration.h AlgorithmRegistration.cpp Direction.h AbstractAlgorithm.h SensorInformation.h AlgorithmLoader.cpp AlgorithmLoader.h)
 
 add_executable(Simulator ${SOURCE_FILES})
+
+add_library(_306543083_G.so SHARED ${G_FILES})
+add_library(_306543083_N.so SHARED ${N_FILES})
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+#include_directories(_306543083_G.so PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+#include_directories(_306543083_N.so PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+#TARGET_LINK_LIBRARIES(Simulator _306543083_G.so _306543083_N.so)
