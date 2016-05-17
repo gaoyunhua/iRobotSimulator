@@ -9,7 +9,13 @@ public:
     int sumDirtInHouse;
     int sumDirtCollected;
     bool isBackInDocking;
+    bool isDone;
+    int position;
 
+    int getActualPosition(int lastWinningPosition)const
+    {
+        return isDone ? position : lastWinningPosition + 1;
+    }
     CleanerResult(int _numOfSteps, int _sumDirtInHouse, int _sumDirtCollected, bool _isBackInDocking) :
             numOfSteps(_numOfSteps), sumDirtInHouse(_sumDirtInHouse), sumDirtCollected(_sumDirtCollected),
             isBackInDocking(_isBackInDocking){}

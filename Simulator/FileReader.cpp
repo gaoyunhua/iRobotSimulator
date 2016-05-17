@@ -4,6 +4,8 @@
 #include <cstdlib>
 #include "FileReader.h"
 #include "FileLister.h"
+#include <dlfcn.h>
+#include "Debugger.h"
 
 using namespace std;
 
@@ -260,3 +262,97 @@ string FileReader::isValidHouse(House* h)
 
     return "";
 }
+
+score_func* FileReader::ScoreFunction(string& path, void*& filename)
+{
+    if (path.empty())
+		return nullptr;
+	//get all .so files
+	PRINT_DEBUG("Starting to load score formula");
+	vector<string> scoreFiles;
+	//FilesHandler::getFilesWithSuffix(path, ".so", algorithmFiles);
+		scoreFiles = FileReader::GetFilesFromDir(path, "libscore_formula.so.dylib");
+
+
+	//if no .so found, search in home dir
+	if (scoreFiles.size() == 0){
+		cout << usageMessage << endl;
+		cout << "cannot find score_formula.so file in " << path << endl;
+//		return SetDefaultScoreFormula(GET_WORKING_DIR(), filename);
+		return nullptr;
+	}
+
+	//load handles for dynamic libs
+	PRINT_DEBUG("number of score_formula.so files found: " << scoreFiles.size());
+
+	filename = dlopen(scoreFiles.front().c_str(), RTLD_NOW);
+	if (filename == nullptr)
+	{
+		cout << "score_formula.so exists in " << path << " but cannot be opened or is not a valid.so" << endl;
+		return nullptr;
+	}
+
+	score_func* calcScorePtr = (score_func*)dlsym(filename, "calc_score");
+	const char* dlsym_error = dlerror();
+	if (dlsym_error != nullptr)  //error in dlsym
+	{
+		cout << "score_formula.so is a valid .so but it does not have a valid score formula " << endl;
+		return nullptr;
+	}
+	return calcScorePtr;
+}
+
+vector<string> FileReader::GetFilesFromDir(string dirPath, string suffix)
+{
+    DIR *dir;
+    struct dirent *ent;
+
+    string path = dirPath;
+    if (path.empty())
+        path = "./";
+    else if (path.back() != '/')
+        path.push_back('/');
+
+    vector<string> filesListToLoad;
+    if ((dir = opendir(path.c_str())) != NULL)
+    {
+        while ((ent = readdir(dir)) != NULL)
+        {
+            if (!strcmp(ent->d_name, ".")) continue;
+            if (!strcmp(ent->d_name, "..")) continue;
+
+            if (strstr(ent->d_name, suffix.c_str()))
+            {
+                //cout << "found matching file!!" << endl;
+                filesListToLoad.push_back(FileReader::concatenateAbsolutePath(path, ent->d_name));
+            }
+
+            //if (endsWith(ent->d_name, suffix)){
+//                cout << "found matching file!!" << endl;
+//                filesListToLoad.push_back(concatenateAbsolutePath(path, ent->d_name));
+//            }
+        }
+        closedir(dir);
+    }
+
+    else
+    {
+        cout << "Error: could not open directory: " <<  path << endl;
+        return filesListToLoad;
+    }
+
+    sort(filesListToLoad.begin(), filesListToLoad.end());
+    return filesListToLoad;
+}
+
+string FileReader::concatenateAbsolutePath(const string& dirPath, const string& fileName)
+{
+    if (dirPath.empty())
+        return fileName;
+    if (dirPath.back() == '/')
+        return dirPath + fileName;
+    return dirPath + "/" + fileName;
+}
+
+
+

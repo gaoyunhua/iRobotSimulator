@@ -10,6 +10,8 @@
 
 using namespace std;
 
+typedef int score_func(const map<string, int>&);
+
 class ReadHouses;
 
 class FileReader
@@ -22,10 +24,14 @@ private:
     static House* input(string filePath);
     static void fixHouse(House* h);
     static string isValidHouse(House* h);
+    static string concatenateAbsolutePath(const string& dirPath, const string& fileName);
 
 public:
     static map<string,int> ReadConfig(string dirPath);
     static pair<vector<House*>,vector<pair<string,string> > > ReadHouses(string dirPath);
+    static score_func* ScoreFunction(string& path, void*& filename);
+
+    static vector<string> GetFilesFromDir(string dir, string suffix);
 };
 
 

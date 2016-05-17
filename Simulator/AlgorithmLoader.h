@@ -10,12 +10,15 @@ using namespace std;
 
 class AlgorithmLoader
 {
+    int counter;
     vector<string> algorithmNames;
     vector<function<unique_ptr<AbstractAlgorithm>()> > algorithmFactories;
 
     void registerAlgorithm(function<unique_ptr<AbstractAlgorithm>()> algorithmFactory)
     {
-        cout << "REGISTERING" << endl;
+        instance.counter++;
+        cout << "AAAAAAAAABBBBB" << endl;
+        cout << "REGISTERING: " + to_string(instance.counter)  + "A"<< endl;
         instance.algorithmFactories.push_back(algorithmFactory);
     }
 
@@ -33,7 +36,7 @@ public:
     vector<unique_ptr<AbstractAlgorithm> > getAlgorithms()const
     {
         vector<unique_ptr<AbstractAlgorithm> > algorithms;
-        for(auto algorithmFactoryFunc : instance.algorithmFactories) {
+        for(auto algorithmFactoryFunc : algorithmFactories) {
             algorithms.push_back(algorithmFactoryFunc());
         }
         return algorithms;
@@ -41,7 +44,10 @@ public:
 
     const vector<string>& getAlgorithmNames()const { return algorithmNames; }
     size_t size()const { return algorithmFactories.size(); }
-    static AlgorithmLoader& getInstance() { return instance; }
+    static AlgorithmLoader& getInstance()
+    {
+        return instance;
+    }
 private:
     static AlgorithmLoader instance;
 };

@@ -90,4 +90,4 @@ void _306543083_N::saveStep(Direction d)
     stepsList.push_back(d);
 }
 
-REGISTER_ALGORITHM(_306543083_N)
+//REGISTER_ALGORITHM(_306543083_N)

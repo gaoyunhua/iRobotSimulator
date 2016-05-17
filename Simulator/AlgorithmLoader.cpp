@@ -10,7 +10,6 @@ AlgorithmLoader AlgorithmLoader::instance;
 
 int AlgorithmLoader::loadAlgorithm(const string& path, const string& so_file_name_without_so_suffix)
 {
-    size_t size = instance.size();
     void *handler = dlopen(path.c_str(), RTLD_NOW);
     if (handler == nullptr)
     {

@@ -8,6 +8,7 @@
 
 AlgorithmRegistration::AlgorithmRegistration(std::function < std::unique_ptr<AbstractAlgorithm>() > func)
 {
-    AlgorithmLoader::getInstance().registerAlgorithm(func);
+    AlgorithmLoader loader = AlgorithmLoader::getInstance();
+    loader.registerAlgorithm(func);
 }
 

@@ -1,5 +1,6 @@
 
 #include "Cleaner.h"
+#include "Debugger.h"
 
 void Cleaner::clean()
 {
@@ -18,6 +19,7 @@ void Cleaner::clean()
 
 void Cleaner::Step()
 {
+
     printHouse(robotLocation.getX(), robotLocation.getY());
     Direction moveDirection = algorithm.step();
 
@@ -75,6 +77,9 @@ CleanerResult Cleaner::stopSimulation()
 
 void Cleaner::printHouse(int iRob, int jRob)
 {
+    if (!DEBUG)
+        return;
+
     for (int i = 0; i < house->rows; ++i)
     {
         for (int j = 0; j < house->columns; ++j)
