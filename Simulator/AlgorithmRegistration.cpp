@@ -12,3 +12,5 @@ AlgorithmRegistration::AlgorithmRegistration(std::function < std::unique_ptr<Abs
     loader.registerAlgorithm(func);
 }
 
+
+

@@ -18,8 +18,8 @@ class Cleaner
     Point& robotLocation;
 
 public:
-    Cleaner(AbstractAlgorithm& _algorithm, AbstractSensor* _sensor, House* _house, Point& _robotLocation , map<string,int>& _config) :
-            algorithm(_algorithm), sensor(_sensor), house(_house), robotLocation(_robotLocation), configuration(_config){}
+    Cleaner(AbstractAlgorithm& _algorithm, AbstractSensor* _sensor, House* _house, Point& _robotLocation , map<string,int>& _config, string _algoName) :
+            algorithm(_algorithm), sensor(_sensor), house(_house), robotLocation(_robotLocation), configuration(_config), algorithmName(_algoName){}
 
     void clean();
     void Step();
@@ -27,7 +27,8 @@ public:
     CleanerResult stopSimulation();
 
     void robotAtDock(int rechargeRate, Point &newRobotLocation, int &steps, int &batteryLevel);
-
+    string algorithmName;
+    string getHouseName(){ return house->name; }
     void performStep(int &steps, int &dirtCleaned, int &batteryLevel);
 
 private:

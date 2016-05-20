@@ -52,6 +52,8 @@ House::House(const House& aHouse)
     }
 
     docking = aHouse.docking;
+    name = aHouse.name;
+    maxSteps = aHouse.maxSteps;
 
     if (rows <= 0 || columns <= 0)
         return;

@@ -22,7 +22,7 @@ set(SOURCE_FILES
         Sensor.h
     main.cpp
     Simulator.cpp
-    Simulator.h FileLister.h AlgorithmLoader.cpp AlgorithmLoader.h _306543083_N.cpp _306543083_N.h _306543083_G.cpp _306543083_G.h score_formula.cpp Debugger.h AlgorithmRegistration.h AlgorithmRegistration.cpp)
+    Simulator.h FileLister.h AlgorithmLoader.cpp AlgorithmLoader.h _306543083_N.cpp _306543083_N.h _306543083_G.cpp _306543083_G.h score_formula.cpp Debugger.h AlgorithmRegistration.h AlgorithmRegistration.cpp ScoreManager.cpp ScoreManager.h)
 
 set(G_FILES _306543083_G.cpp _306543083_G.h AlgorithmRegistration.h AlgorithmRegistration.cpp Direction.h AbstractAlgorithm.h SensorInformation.h AlgorithmLoader.cpp AlgorithmLoader.h)
 set(N_FILES _306543083_N.cpp _306543083_N.h AlgorithmRegistration.h AlgorithmRegistration.cpp Direction.h AbstractAlgorithm.h SensorInformation.h AlgorithmLoader.cpp AlgorithmLoader.h)

@@ -6,6 +6,7 @@
 #include "AlgorithmLoader.h"
 #include "_306543083_N.h"
 #include "_306543083_G.h"
+#include <map>
 
 extern "C" int calc_score(const std::map<std::string, int>& score_params);
 
@@ -51,67 +52,79 @@ void Simulator::Simulate(int argc, const char * argv[])
     }
 
     int algosCount = 2;
-    vector<vector<int> > algosScores(algosCount, vector<int>(0));
 
-    int k = 0;
+
+    scoreManager = new ScoreManager();
+
     for(House* housePtr: houses)
     {
         House& house = *housePtr;
-
-
-
-
+        runSimulationOnHouse(house);
     }
 
-    vector<string> results;
-    unsigned long prefixLength = (15 + 10 * (houses.size() + 1));
-    string prefix(prefixLength, '-');
-    results.push_back(prefix);
+    printResults();
 
-    string header = "|             ";
-    for (int i = 0; i < houses.size(); i++)
-    {
-        ostringstream ss;
-        ss << setw( 3 ) << setfill( '0' ) << to_string(i+1);
+    config.clear();
+    delete scoreManager;
+}
 
-        header += "|" + ss.str() + "      ";
-    }
-    header += "|AVG      |";
-    results.push_back(header);
+void Simulator::printResults()
+{
+//    vector<string> results;
+//    int prefixLength = (15 + 10 * (housesCount + 1));
+//    string prefix(prefixLength, '-');
+//    results.push_back(prefix);
+//
+//    string header = "|             ";
+//    for (int i = 0; i < housesCount; i++)
+//    {
+//        ostringstream ss;
+//        ss << setw( 3 ) << setfill( '0' ) << to_string(i+1);
+//
+//        header += "|" + ss.str() + "      ";
+//    }
+//    header += "|AVG      |";
+//    results.push_back(header);
+//
+////    map<string, int> a = scoreManager->scores.at("_306543083_G");
+//
+//    map<string, map<string, int>>::iterator aitr = scoreManager->scores.begin();
+//
+//    int numOfHouses = (int) aitr->second.size();
+//
+//    for (int i = 0; i < numOfHouses; i++)
+//    {
+//        scoreManager->sc
+//        string algoScoreString = i == 0 ? "|306543083_G_ " : "|306543083_N_ ";
+//        int algoAvg = 0;
+//        for (int algoscore : algosScores[i])
+//        {
+//            algoAvg += algoscore;
+//            ostringstream ss;
+//            ss << setw( 9 ) << setfill( ' ' ) << to_string(algoscore);
+//            algoScoreString += "|" + ss.str();
+//        }
+//
+//        ostringstream ss;
+//        string avg = to_string(((float)(algoAvg)) / housesCount);
+//        string sortAvg = avg.substr(0, strcspn(avg.c_str(),".") + 3);
+//        ss << setw( 9 ) << setfill( ' ' ) << sortAvg;
+//        algoScoreString += "|" + ss.str() + "|";
+//        results.push_back(algoScoreString);
+//    }
+//    results.push_back(prefix);
+//
+//    //TODO: about to finish
+//    //TODO: revise scoring function
+//    for (auto& result : results)
+//        cout << result << endl;
 
-    for (int i = 0; i < algosScores.size(); i++)
-    {
-        string algoScoreString = i == 0 ? "|306543083_G_ " : "|306543083_N_ ";
-        int algoAvg = 0;
-        for (int algoscore : algosScores[i])
-        {
-            algoAvg += algoscore;
-            ostringstream ss;
-            ss << setw( 9 ) << setfill( ' ' ) << to_string(algoscore);
-            algoScoreString += "|" + ss.str();
-        }
-
-        ostringstream ss;
-        string avg = to_string(((float)(algoAvg)) / houses.size());
-        string sortAvg = avg.substr(0, strcspn(avg.c_str(),".") + 3);
-        ss << setw( 9 ) << setfill( ' ' ) << sortAvg;
-        algoScoreString += "|" + ss.str() + "|";
-        results.push_back(algoScoreString);
-    }
-    results.push_back(prefix);
-
-    //TODO: about to finish
-    //TODO: revise scoring function
-    for (auto& result : results)
-        cout << result << endl;
-
+    scoreManager->printScoreTable();
     for (auto& invalidHouse : errorHouses)
     {
         string msg = invalidHouse.first + (invalidHouse.second.empty() ? "" : ": " + invalidHouse.second);
         cout << msg << endl;
     }
-
-    config.clear();
 }
 
 void Simulator::runSimulationOnHouse(House& house)
@@ -131,7 +144,7 @@ void Simulator::runSimulationOnHouse(House& house)
         Point* robotLocation = new Point(house.findDocking());
         House* houseCopy =  new House(house);
         Sensor* as = new Sensor(*houseCopy, *robotLocation);
-        Cleaner cleaner(*algo, as, houseCopy, *robotLocation, config);
+        Cleaner cleaner(*algo, as, houseCopy, *robotLocation, config, "_306543083_X");
         cleaner.clean();
         cleaners.push_back(cleaner);
     }
@@ -150,11 +163,10 @@ void Simulator::runSimulationOnHouse(House& house)
         int score  = calcScore(cleaners[i].GetResult(), 0, 0);
         if (score == -1)
         {
-            errorHouses
-                    .push_back(
-                            pair<string,string>("Score formula could not calculate some scores, see -1 in the results table", ""));
+            errorHouses.push_back(pair<string,string>("Score formula could not calculate some scores, see -1 in the results table", ""));
         }
-        algosScores[i].push_back(score);
+
+        scoreManager->addScore(cleaners[i].algorithmName, cleaners[i].getHouseName(), score);
     }
 }
 
