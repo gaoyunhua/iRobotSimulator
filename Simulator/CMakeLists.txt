@@ -20,22 +20,38 @@ set(SOURCE_FILES
         SensorInformation.h
         Sensor.cpp
         Sensor.h
-    main.cpp
-    Simulator.cpp
-    Simulator.h FileLister.h AlgorithmLoader.cpp AlgorithmLoader.h _306543083_N.cpp _306543083_N.h _306543083_G.cpp _306543083_G.h score_formula.cpp Debugger.h AlgorithmRegistration.h AlgorithmRegistration.cpp ScoreManager.cpp ScoreManager.h)
+        main.cpp
+        Simulator.cpp
+        Simulator.h
+        FileLister.h
+        AlgorithmLoader.cpp AlgorithmLoader.h
+        score_formula.cpp
+        Debugger.h
+        AlgorithmRegistration.h AlgorithmRegistration.cpp
+        ScoreManager.cpp ScoreManager.h)
 
-set(G_FILES _306543083_G.cpp _306543083_G.h AlgorithmRegistration.h AlgorithmRegistration.cpp Direction.h AbstractAlgorithm.h SensorInformation.h AlgorithmLoader.cpp AlgorithmLoader.h)
-set(N_FILES _306543083_N.cpp _306543083_N.h AlgorithmRegistration.h AlgorithmRegistration.cpp Direction.h AbstractAlgorithm.h SensorInformation.h AlgorithmLoader.cpp AlgorithmLoader.h)
+set(G_FILES
+        _306543083_G.cpp _306543083_G.h
+        AlgorithmRegistration.h AlgorithmRegistration.cpp AlgorithmLoader.h AlgorithmLoader.cpp
+        Direction.h AbstractAlgorithm.h SensorInformation.h)
+
+set(N_FILES
+        _306543083_N.cpp _306543083_N.h
+        AlgorithmRegistration.h AlgorithmRegistration.cpp AlgorithmLoader.h AlgorithmLoader.cpp
+        Direction.h AbstractAlgorithm.h SensorInformation.h)
 
 add_executable(Simulator ${SOURCE_FILES})
 
-#add_library(_306543083_G.so SHARED ${G_FILES})
-#add_library(_306543083_N.so SHARED ${N_FILES})
+add_library(_306543083_G.so SHARED ${G_FILES})
+add_library(_306543083_N.so SHARED ${N_FILES})
+install(TARGETS _306543083_G.so DESTINATION /Users/Roni/Desktop/working/)
+install(TARGETS _306543083_N.so DESTINATION /Users/Roni/Desktop/working/)
 
-add_library(score_formula.so SHARED score_formula.cpp)
-
+#
+#add_library(score_formula.so SHARED score_formula.cpp)
+#
 #include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
-
+#
 #include_directories(_306543083_G.so PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 #include_directories(_306543083_N.so PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 #TARGET_LINK_LIBRARIES(Simulator _306543083_G.so _306543083_N.so)

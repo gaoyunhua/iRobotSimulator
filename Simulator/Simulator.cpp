@@ -4,55 +4,18 @@
 #include "FileReader.h"
 #include "Cleaner.h"
 #include "AlgorithmLoader.h"
-#include "_306543083_N.h"
-#include "_306543083_G.h"
+//#include "_306543083_N.h"
+//#include "_306543083_G.h"
 #include <map>
+#include <list>
+#include "Debugger.h"
 
 extern "C" int calc_score(const std::map<std::string, int>& score_params);
 
 void Simulator::Simulate(int argc, const char * argv[])
 {
-    string configParamPath = ParseConfigParam(argc, argv);
-    config = FileReader::ReadConfig(configParamPath);
-
-    string houseParamPath = ParseHouseParam(argc, argv);
-    string scoreFuncPath = ParseScoreParam(argc, argv);//"/Users/Roni/Desktop/working/";
-    string algosPath = ParseAlgorithmPathParam(argc, argv);
-    //TODO:ADD score param rad
-
-
-    auto readHouses = FileReader::ReadHouses(houseParamPath);
-    vector<House*> houses = readHouses.first;
-    errorHouses = readHouses.second;
-
-    if (!houses.size())
-    {
-        cout << "All house files in target folder " + houseParamPath + " cannot be opened or are invalid:" << endl;
-        for (auto& errorHouse : errorHouses)
-        {
-            cout << errorHouse.first + ": " + errorHouse.second << endl;
-        }
-        exit(0);
-    }
-
-//    AlgorithmLoader& loader = AlgorithmLoader::getInstance();
-//    loader.loadAlgorithm("/Users/Roni/Desktop/working/lib_306543083_G.so.dylib", "_306543083_G");
-//    loader.loadAlgorithm("/Users/Roni/Desktop/working/lib_306543083_N.so.dylib", "_306543083_N");
-//
-//    vector<unique_ptr<AbstractAlgorithm> > algorithms = loader.getAlgorithms();
-//    vector<string> algoNames = loader.getAlgorithmNames();
-
-
-    void* filename = nullptr;
-    calcScorePtr = FileReader::ScoreFunction(scoreFuncPath, filename);
-    calcScorePtr = calc_score;
-    if (calcScorePtr == nullptr)
-    {
-        calcScorePtr = calc_score;
-    }
-
+    ReadParams(argc, argv);
     int algosCount = 2;
-
 
     scoreManager = new ScoreManager();
 
@@ -63,62 +26,10 @@ void Simulator::Simulate(int argc, const char * argv[])
     }
 
     printResults();
-
-    config.clear();
-    delete scoreManager;
 }
 
 void Simulator::printResults()
 {
-//    vector<string> results;
-//    int prefixLength = (15 + 10 * (housesCount + 1));
-//    string prefix(prefixLength, '-');
-//    results.push_back(prefix);
-//
-//    string header = "|             ";
-//    for (int i = 0; i < housesCount; i++)
-//    {
-//        ostringstream ss;
-//        ss << setw( 3 ) << setfill( '0' ) << to_string(i+1);
-//
-//        header += "|" + ss.str() + "      ";
-//    }
-//    header += "|AVG      |";
-//    results.push_back(header);
-//
-////    map<string, int> a = scoreManager->scores.at("_306543083_G");
-//
-//    map<string, map<string, int>>::iterator aitr = scoreManager->scores.begin();
-//
-//    int numOfHouses = (int) aitr->second.size();
-//
-//    for (int i = 0; i < numOfHouses; i++)
-//    {
-//        scoreManager->sc
-//        string algoScoreString = i == 0 ? "|306543083_G_ " : "|306543083_N_ ";
-//        int algoAvg = 0;
-//        for (int algoscore : algosScores[i])
-//        {
-//            algoAvg += algoscore;
-//            ostringstream ss;
-//            ss << setw( 9 ) << setfill( ' ' ) << to_string(algoscore);
-//            algoScoreString += "|" + ss.str();
-//        }
-//
-//        ostringstream ss;
-//        string avg = to_string(((float)(algoAvg)) / housesCount);
-//        string sortAvg = avg.substr(0, strcspn(avg.c_str(),".") + 3);
-//        ss << setw( 9 ) << setfill( ' ' ) << sortAvg;
-//        algoScoreString += "|" + ss.str() + "|";
-//        results.push_back(algoScoreString);
-//    }
-//    results.push_back(prefix);
-//
-//    //TODO: about to finish
-//    //TODO: revise scoring function
-//    for (auto& result : results)
-//        cout << result << endl;
-
     scoreManager->printScoreTable();
     for (auto& invalidHouse : errorHouses)
     {
@@ -127,43 +38,126 @@ void Simulator::printResults()
     }
 }
 
+vector<pair<string, AbstractAlgorithm*> > Simulator::loadAlgorithms()
+{
+    vector<pair<string, AbstractAlgorithm* > >algorithms;
+//    AbstractAlgorithm* gAlgorithm = new _306543083_G();
+//    AbstractAlgorithm* algorithm = new _306543083_N();
+//    algorithms.push_back(pair<string, AbstractAlgorithm*> ("_306543083_G", gAlgorithm));
+//    algorithms.push_back(pair<string, AbstractAlgorithm*> ("_306543083_N", algorithm));
+//
+//    return algorithms;
+
+    AlgorithmLoader::getInstance().loadAlgorithm("/Users/Roni/Desktop/working/lib_306543083_G.so.dylib", "_306543083_G");
+    AlgorithmLoader::getInstance().loadAlgorithm("/Users/Roni/Desktop/working/lib_306543083_N.so.dylib", "_306543083_N");
+
+    vector<unique_ptr<AbstractAlgorithm> > algorithmPointers = AlgorithmLoader::getInstance().getAlgorithms();
+    vector<string> algoNames = AlgorithmLoader::getInstance().getAlgorithmNames();
+
+    if (algorithmPointers.size() == 0)
+    {
+        cout << "No algorithms loaded";
+        exit(0);
+    }
+
+    for (int i = 0; i < algorithmPointers.size(); i++)
+    {
+        AbstractAlgorithm* a = algorithmPointers[i].get();
+        algorithms.push_back(pair<string, AbstractAlgorithm* >(algoNames[i], a));
+    }
+
+    return algorithms;
+}
+
 void Simulator::runSimulationOnHouse(House& house)
 {
     vector<Cleaner> cleaners;
-
-    vector<AbstractAlgorithm*> algorithms;
-
-    AbstractAlgorithm* gAlgorithm = new _306543083_G();
-    AbstractAlgorithm* algorithm = new _306543083_N();
-
-    algorithms.push_back(gAlgorithm);
-    algorithms.push_back(algorithm);
-
+    vector<pair<string, AbstractAlgorithm*> >algorithms = loadAlgorithms();
     for (auto& algo : algorithms)
     {
         Point* robotLocation = new Point(house.findDocking());
         House* houseCopy =  new House(house);
         Sensor* as = new Sensor(*houseCopy, *robotLocation);
-        Cleaner cleaner(*algo, as, houseCopy, *robotLocation, config, "_306543083_X");
+        Cleaner cleaner(*(algo.second), as, houseCopy, *robotLocation, config, algo.first);
         cleaner.clean();
         cleaners.push_back(cleaner);
     }
 
-    for (int steps = 0; steps < house.maxSteps; steps++)
-    {
-        for (int i = 0 ; i < cleaners.size(); i++)
-        {
-            cleaners[i].Step();
+    runCompetitionOnHouse(house, cleaners);
+}
+
+void Simulator::runCompetitionOnHouse(House& house, vector<Cleaner>& cleaners)
+{
+    bool allDone = false;
+    bool someoneDone = false;
+    int winnerNumSteps = 0;
+    int simulationSteps = 0;
+    int stepLeftInSimulation = cleaners[0].getHouseMaxSteps() - 1;
+    list< map<Cleaner, int> > positions;
+    int currPosition = 1;
+
+    while (!allDone && simulationSteps <= stepLeftInSimulation){
+        //loop ends only when all sims are done
+        allDone = true;
+        int simsDoneInStep = 0;
+        for (auto& cleaner : cleaners){
+            cleaner.Step();
+
+            //if sim is not done yet
+            if (!(cleaner.isDone())){
+                allDone = false;	//if at least one sim hasn't finished -> allDone = false
+                //sim->makeStep();
+            }
+
+            else{	//this simulation is done
+                PRINT_DEBUG("sim for algorithm: " << cleaner.algorithmName << " done");
+                //if the simulation finished in this round and house is clean
+                if ( cleaner.getDidFinishCleaning() && cleaner.isRobotAtDock() ){
+                    PRINT_DEBUG("algorithm: " << cleaner.algorithmName << " finishing for first time");
+                    //this is the first simulation to finish
+                    if (!someoneDone){
+                        PRINT_DEBUG("first winner!! on step: " << cleaner.steps);
+                        someoneDone = true;
+                        winnerNumSteps = cleaner.steps;
+
+                        //signal all sims first algo has finished
+                        for (auto& remainingCleaner : cleaners){
+                            //this sim has already done a step in this round
+                            if (remainingCleaner.steps > simulationSteps)
+                                remainingCleaner.aboutToFinish(config["MaxStepsAfterWinner"] - 1);
+                            else
+                                remainingCleaner.aboutToFinish(config["MaxStepsAfterWinner"]);
+                        }
+
+                        //update simulation stoping condition
+                        stepLeftInSimulation = simulationSteps + config["MaxStepsAfterWinner"];
+                    }
+                    simsDoneInStep++;
+                    cleaner.setPosition(currPosition);
+                }
+            }
         }
+        currPosition += simsDoneInStep;
+        simulationSteps++;
     }
 
+    //if no one finished cleaning the house
+    if (!someoneDone)
+        winnerNumSteps = simulationSteps;
+
+    calculateCleanerResult(cleaners, winnerNumSteps, currPosition);
+}
+
+void Simulator::calculateCleanerResult(const vector<Cleaner> &cleaners, int winnerNumSteps, int loserPosition)
+{
     for (int i = 0; i < cleaners.size(); i++)
     {
         //TODO:int winnerNumSteps, int loserPosition
         int score  = calcScore(cleaners[i].GetResult(), 0, 0);
         if (score == -1)
         {
-            errorHouses.push_back(pair<string,string>("Score formula could not calculate some scores, see -1 in the results table", ""));
+            errorHouses.push_back(
+                    pair<string,string>("Score formula could not calculate some scores, see -1 in the results table", ""));
         }
 
         scoreManager->addScore(cleaners[i].algorithmName, cleaners[i].getHouseName(), score);
@@ -224,3 +218,48 @@ int Simulator::calcScore(const CleanerResult& simStats, int winnerNumSteps, int 
 
     return calcScorePtr(score_params);
 }
+
+void Simulator::ReadParams(int argc, const char * argv[])
+{
+    string configParamPath = ParseConfigParam(argc, argv);
+    config = FileReader::ReadConfig(configParamPath);
+
+    string houseParamPath = ParseHouseParam(argc, argv);
+    string scoreFuncPath = ParseScoreParam(argc, argv);//"/Users/Roni/Desktop/working/";
+    string algosPath = ParseAlgorithmPathParam(argc, argv);
+
+    auto readHouses = FileReader::ReadHouses(houseParamPath);
+    houses = readHouses.first;
+    errorHouses = readHouses.second;
+
+    if (!houses.size())
+    {
+        cout << "All house files in target folder " + houseParamPath + " cannot be opened or are invalid:" << endl;
+        for (auto& errorHouse : errorHouses)
+        {
+            cout << errorHouse.first + ": " + errorHouse.second << endl;
+        }
+        exit(0);
+    }
+
+    void* filename = nullptr;
+    calcScorePtr = FileReader::ScoreFunction(scoreFuncPath, filename);
+    calcScorePtr = calc_score;
+    if (calcScorePtr == nullptr)
+    {
+        calcScorePtr = calc_score;
+    }
+}
+
+Simulator::~Simulator()
+{
+//    config.clear();
+    config.clear();
+    delete scoreManager;
+//    delete houses;
+//    delete errorHouses;
+//    delete(calcScorePtr);
+}
+
+
+

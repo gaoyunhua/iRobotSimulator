@@ -6,7 +6,7 @@
 
 using namespace std;
 
-AlgorithmLoader AlgorithmLoader::instance;
+
 
 int AlgorithmLoader::loadAlgorithm(const string& path, const string& so_file_name_without_so_suffix)
 {
@@ -17,24 +17,26 @@ int AlgorithmLoader::loadAlgorithm(const string& path, const string& so_file_nam
         return FILE_CANNOT_BE_LOADED;
     }
 
-    typedef AlgorithmRegistration* (*algo_t)();
+//    typedef AlgorithmRegistration* (*algo_t)();
+//
+//    string dldl = "register_me_" + so_file_name_without_so_suffix;
+//
+//    void* regptr = dlsym(handler, dldl.c_str());
+//
+//    algo_t getreg = reinterpret_cast<algo_t>(reinterpret_cast<long>(regptr));
+//    if (getreg == nullptr)
+//    {
+//        cout << "DEBUG: dlsym error: " << dlerror() << endl;
+//        dlclose(handler);
+//        return NO_ALGORITHM_REGISTERED;
+//    }
+//
+////    getreg();
+////    AlgorithmRegistration* reg = getreg();// pushes the factory function into algoFactories
 
-    string dldl = "register_me_" + so_file_name_without_so_suffix;
-
-    void* regptr = dlsym(handler, dldl.c_str());
-
-    algo_t getreg = reinterpret_cast<algo_t>(reinterpret_cast<long>(regptr));
-    if (getreg == nullptr)
-    {
-        cout << "DEBUG: dlsym error: " << dlerror() << endl;
-        dlclose(handler);
-        return NO_ALGORITHM_REGISTERED;
-    }
-
-//    getreg();
-//    AlgorithmRegistration* reg = getreg();// pushes the factory function into algoFactories
-
-    dlclose(handler);
+//    dlclose(handler);
 
     return ALGORITHM_REGISTERED_SUCCESSFULY;
 }
+
+AlgorithmLoader AlgorithmLoader::instance;

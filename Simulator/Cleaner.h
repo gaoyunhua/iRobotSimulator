@@ -23,18 +23,26 @@ public:
 
     void clean();
     void Step();
-    CleanerResult GetResult();
-    CleanerResult stopSimulation();
-
     void robotAtDock(int rechargeRate, Point &newRobotLocation, int &steps, int &batteryLevel);
-    string algorithmName;
-    string getHouseName(){ return house->name; }
     void performStep(int &steps, int &dirtCleaned, int &batteryLevel);
+
+    bool isDone() { return didFinishCleaning || didStopSimulation; }
+    CleanerResult GetResult() const;
+    CleanerResult stopSimulation();
+    void aboutToFinish(int stepsTillFinish){ algorithm.aboutToFinish(stepsTillFinish); }
+    bool isRobotAtDock() { return robotLocation.equals(house->findDocking()); }
+    bool getDidFinishCleaning() { return didFinishCleaning; }
+
+    string getHouseName() const { return house->name; }
+    int getHouseMaxSteps() { return house->maxSteps; }
+    void setPosition(int _pos) { position = _pos; }
+    string algorithmName;
+    int steps;
 
 private:
     void printHouse(int iRob, int jRob);
-    int steps, dirtCleaned, sumOfDirt, maxSteps, batteryLevel, rechargeRate;
-    bool didStopSimulation;
+    int dirtCleaned, sumOfDirt, maxSteps, batteryLevel, rechargeRate, position;
+    bool didStopSimulation, didFinishCleaning;
 
 };
 

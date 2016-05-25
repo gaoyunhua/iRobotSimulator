@@ -11,6 +11,7 @@ void Cleaner::clean()
     batteryLevel = configuration.at("BatteryCapacity");
     rechargeRate = configuration.at("BatteryRechargeRate");
     didStopSimulation = false;
+    didFinishCleaning = false;
 
     algorithm.setConfiguration(configuration);
     AbstractSensor& a = *sensor;
@@ -19,27 +20,35 @@ void Cleaner::clean()
 
 void Cleaner::Step()
 {
-
     printHouse(robotLocation.getX(), robotLocation.getY());
+
+    if (batteryLevel <= 0)
+    {
+        PRINT_DEBUG("Battery dead");
+        return;
+    }
+
     Direction moveDirection = algorithm.step();
 
-//    if ((int)moveDirection == 4)
-//    {
-//        didStopSimulation = true;
-//        return;
-//    }
-
     Point newRobotLocation = Point::GetPointByDirection(robotLocation, moveDirection);
-    cout << "Moving:(" + to_string(robotLocation.getX()) + "," + to_string(robotLocation.getY())  + ")-->(" + to_string(newRobotLocation.getX()) + "," + to_string(newRobotLocation.getY()) + ")" << endl;
-    cout << endl;
+    PRINT_DEBUG(
+            "Moving:(" +
+                    to_string(robotLocation.getX()) +
+                    "," + to_string(robotLocation.getY())  +
+                    ")-->(" + to_string(newRobotLocation.getX()) +
+                    "," + to_string(newRobotLocation.getY()) + ")");
+
     if (newRobotLocation.equals(house->findDocking()))
     {
         robotAtDock(rechargeRate, newRobotLocation, steps, batteryLevel);
     }
 
-    if (batteryLevel <= 0)
+
+
+    if (house->isWall(newRobotLocation))
     {
-        return;
+        PRINT_DEBUG("Robot crashed into a wall!");
+        didStopSimulation = true;
     }
 
     robotLocation.move(moveDirection);
@@ -47,12 +56,12 @@ void Cleaner::Step()
     steps++;
 }
 
-CleanerResult Cleaner::GetResult()
+CleanerResult Cleaner::GetResult() const
 {
     if (didStopSimulation)
         return CleanerResult();
 
-    return CleanerResult(steps, sumOfDirt, dirtCleaned, robotLocation.equals(house->findDocking()));
+    return CleanerResult(steps, sumOfDirt, dirtCleaned, robotLocation.equals(house->findDocking()), position);
 }
 
 void Cleaner::performStep(int &steps, int &dirtCleaned, int &batteryLevel)

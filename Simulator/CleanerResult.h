@@ -16,9 +16,9 @@ public:
     {
         return isDone ? position : lastWinningPosition + 1;
     }
-    CleanerResult(int _numOfSteps, int _sumDirtInHouse, int _sumDirtCollected, bool _isBackInDocking) :
+    CleanerResult(int _numOfSteps, int _sumDirtInHouse, int _sumDirtCollected, bool _isBackInDocking, int _position) :
             numOfSteps(_numOfSteps), sumDirtInHouse(_sumDirtInHouse), sumDirtCollected(_sumDirtCollected),
-            isBackInDocking(_isBackInDocking){}
+            isBackInDocking(_isBackInDocking), position(_position){}
     CleanerResult(){}
 };
 

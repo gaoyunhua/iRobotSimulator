@@ -1,7 +1,7 @@
 
+#include "_306543083_N.h"
 #include <cstdlib>
 #include <string>
-#include "_306543083_N.h"
 #include "AlgorithmRegistration.h"
 
 using namespace std;
@@ -90,4 +90,4 @@ void _306543083_N::saveStep(Direction d)
     stepsList.push_back(d);
 }
 
-//REGISTER_ALGORITHM(_306543083_N)
+REGISTER_ALGORITHM(_306543083_N)
