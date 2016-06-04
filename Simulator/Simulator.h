@@ -3,7 +3,7 @@
 #define SIMULATOR_SIMULATOR_H
 
 #include <string>
-#import "CleanerResult.h"
+#include "CleanerResult.h"
 #include "FileReader.h"
 #include "ScoreManager.h"
 #include "Cleaner.h"
@@ -16,29 +16,34 @@ class Simulator
 {
 public:
     void Simulate(int argc, const char * argv[]);
-    void runSimulationOnHouse(House& house);
-    vector<pair<string, AbstractAlgorithm* > > loadAlgorithms();
+    list<pair<string, unique_ptr<AbstractAlgorithm> > > loadAlgorithms();
+
     string ParseConfigParam(int argc, const char **argv);
     string ParseHouseParam(int argc, const char **argv);
     string ParseScoreParam(int argc, const char **argv);
+    int ParseThreadsParam(int argc, const char **argv);
     string ParseAlgorithmPathParam(int argc, const char **argv);
     string ParseParam(string paramPrefix, int argc, const char* argv[]);
+    void runSingleSubSimulationThread(atomic_size_t *house_shared_counter);
     ~Simulator();
 
 private:
     void ReadParams(int argc, const char * argv[]);
     vector<House*> houses;
+    vector<string> algorithmFiles;
     vector<pair<string,string> > errorHouses;
     score_func* calcScorePtr;
     map<string,int> config;
+    int threads;
     int calcScore(const CleanerResult &simStats, int winnerNumSteps, int loserPosition) const;
     void printResults();
-
+    string algorithmsPath;
     ScoreManager* scoreManager;
+    void runCompetitionOnHouse(int houseIndex);
 
-    void runCompetitionOnHouse(House& house, vector<Cleaner>& cleaners);
+    void runSimulation(int threadsCount);
 
-    void calculateCleanerResult(const vector<Cleaner> &cleaners, int winnerNumSteps, int loserPosition);
+
 };
 
 

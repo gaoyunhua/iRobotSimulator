@@ -13,14 +13,14 @@ void Cleaner::clean()
     didStopSimulation = false;
     didFinishCleaning = false;
 
-    algorithm.setConfiguration(configuration);
+    algorithm->setConfiguration(configuration);
     AbstractSensor& a = *sensor;
-    algorithm.setSensor(a);
+    algorithm->setSensor(a);
 }
 
 void Cleaner::Step()
 {
-    printHouse(robotLocation.getX(), robotLocation.getY());
+//    printHouse(robotLocation.getX(), robotLocation.getY());
 
     if (batteryLevel <= 0)
     {
@@ -28,7 +28,7 @@ void Cleaner::Step()
         return;
     }
 
-    Direction moveDirection = algorithm.step();
+    Direction moveDirection = algorithm->step();
 
     Point newRobotLocation = Point::GetPointByDirection(robotLocation, moveDirection);
     PRINT_DEBUG(

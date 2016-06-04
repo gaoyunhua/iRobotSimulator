@@ -6,7 +6,7 @@
 using namespace std;
 
 #include "AbstractSensor.h"
-#import "Direction.h"
+#include "Direction.h"
 
 class AbstractAlgorithm
 {

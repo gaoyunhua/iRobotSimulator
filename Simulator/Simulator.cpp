@@ -1,30 +1,25 @@
 #include <iomanip>
 #include <sstream>
 #include "Simulator.h"
-#include "FileReader.h"
 #include "Cleaner.h"
-#include "AlgorithmLoader.h"
-//#include "_306543083_N.h"
-//#include "_306543083_G.h"
-#include <map>
+#include "AlgorithmRegistrar.h"
+#include <vector>
 #include <list>
 #include "Debugger.h"
+#include "AbstractAlgorithm.h"
+#include "my_make_unique.h"
+#include <thread>
+#include <atomic>
+#include <functional>
 
 extern "C" int calc_score(const std::map<std::string, int>& score_params);
 
 void Simulator::Simulate(int argc, const char * argv[])
 {
+    PRINT_DEBUG("Reading Params");
     ReadParams(argc, argv);
-    int algosCount = 2;
-
     scoreManager = new ScoreManager();
-
-    for(House* housePtr: houses)
-    {
-        House& house = *housePtr;
-        runSimulationOnHouse(house);
-    }
-
+    runSimulation(threads);
     printResults();
 }
 
@@ -38,61 +33,35 @@ void Simulator::printResults()
     }
 }
 
-vector<pair<string, AbstractAlgorithm*> > Simulator::loadAlgorithms()
+void Simulator::runCompetitionOnHouse(int houseIndex)
 {
-    vector<pair<string, AbstractAlgorithm* > >algorithms;
-//    AbstractAlgorithm* gAlgorithm = new _306543083_G();
-//    AbstractAlgorithm* algorithm = new _306543083_N();
-//    algorithms.push_back(pair<string, AbstractAlgorithm*> ("_306543083_G", gAlgorithm));
-//    algorithms.push_back(pair<string, AbstractAlgorithm*> ("_306543083_N", algorithm));
-//
-//    return algorithms;
+    House& house = *houses[houseIndex];
+    vector<unique_ptr<Cleaner>> cleaners;
+    list<pair<string, unique_ptr<AbstractAlgorithm> > >algorithms = loadAlgorithms();
 
-    AlgorithmLoader::getInstance().loadAlgorithm("/Users/Roni/Desktop/working/lib_306543083_G.so.dylib", "_306543083_G");
-    AlgorithmLoader::getInstance().loadAlgorithm("/Users/Roni/Desktop/working/lib_306543083_N.so.dylib", "_306543083_N");
-
-    vector<unique_ptr<AbstractAlgorithm> > algorithmPointers = AlgorithmLoader::getInstance().getAlgorithms();
-    vector<string> algoNames = AlgorithmLoader::getInstance().getAlgorithmNames();
-
-    if (algorithmPointers.size() == 0)
-    {
-        cout << "No algorithms loaded";
-        exit(0);
-    }
-
-    for (int i = 0; i < algorithmPointers.size(); i++)
-    {
-        AbstractAlgorithm* a = algorithmPointers[i].get();
-        algorithms.push_back(pair<string, AbstractAlgorithm* >(algoNames[i], a));
-    }
-
-    return algorithms;
-}
-
-void Simulator::runSimulationOnHouse(House& house)
-{
-    vector<Cleaner> cleaners;
-    vector<pair<string, AbstractAlgorithm*> >algorithms = loadAlgorithms();
+    PRINT_DEBUG("Done fetching Algos");
     for (auto& algo : algorithms)
     {
         Point* robotLocation = new Point(house.findDocking());
         House* houseCopy =  new House(house);
         Sensor* as = new Sensor(*houseCopy, *robotLocation);
-        Cleaner cleaner(*(algo.second), as, houseCopy, *robotLocation, config, algo.first);
-        cleaner.clean();
-        cleaners.push_back(cleaner);
+        PRINT_DEBUG("Building Cleaner");
+
+        cleaners.push_back(make_unique<Cleaner>(algo.second, as, houseCopy, *robotLocation, config, algo.first));
+        PRINT_DEBUG("Storing cleaner");
     }
 
-    runCompetitionOnHouse(house, cleaners);
-}
+    for (auto& c : cleaners) {
+        c->clean();
+        PRINT_DEBUG("Cleaner Ready");
+    }
 
-void Simulator::runCompetitionOnHouse(House& house, vector<Cleaner>& cleaners)
-{
+
     bool allDone = false;
     bool someoneDone = false;
     int winnerNumSteps = 0;
     int simulationSteps = 0;
-    int stepLeftInSimulation = cleaners[0].getHouseMaxSteps() - 1;
+    int stepLeftInSimulation = cleaners[0]->getHouseMaxSteps() - 1;
     list< map<Cleaner, int> > positions;
     int currPosition = 1;
 
@@ -101,39 +70,39 @@ void Simulator::runCompetitionOnHouse(House& house, vector<Cleaner>& cleaners)
         allDone = true;
         int simsDoneInStep = 0;
         for (auto& cleaner : cleaners){
-            cleaner.Step();
+            cleaner->Step();
 
             //if sim is not done yet
-            if (!(cleaner.isDone())){
+            if (!(cleaner->isDone())){
                 allDone = false;	//if at least one sim hasn't finished -> allDone = false
                 //sim->makeStep();
             }
 
             else{	//this simulation is done
-                PRINT_DEBUG("sim for algorithm: " << cleaner.algorithmName << " done");
+                PRINT_DEBUG("sim for algorithm: " << cleaner->algorithmName << " done");
                 //if the simulation finished in this round and house is clean
-                if ( cleaner.getDidFinishCleaning() && cleaner.isRobotAtDock() ){
-                    PRINT_DEBUG("algorithm: " << cleaner.algorithmName << " finishing for first time");
+                if ( cleaner->getDidFinishCleaning() && cleaner->isRobotAtDock() ){
+                    PRINT_DEBUG("algorithm: " << cleaner->algorithmName << " finishing for first time");
                     //this is the first simulation to finish
                     if (!someoneDone){
-                        PRINT_DEBUG("first winner!! on step: " << cleaner.steps);
+                        PRINT_DEBUG("first winner!! on step: " << cleaner->steps);
                         someoneDone = true;
-                        winnerNumSteps = cleaner.steps;
+                        winnerNumSteps = cleaner->steps;
 
                         //signal all sims first algo has finished
                         for (auto& remainingCleaner : cleaners){
                             //this sim has already done a step in this round
-                            if (remainingCleaner.steps > simulationSteps)
-                                remainingCleaner.aboutToFinish(config["MaxStepsAfterWinner"] - 1);
+                            if (remainingCleaner->steps > simulationSteps)
+                                remainingCleaner->aboutToFinish(config["MaxStepsAfterWinner"] - 1);
                             else
-                                remainingCleaner.aboutToFinish(config["MaxStepsAfterWinner"]);
+                                remainingCleaner->aboutToFinish(config["MaxStepsAfterWinner"]);
                         }
 
                         //update simulation stoping condition
                         stepLeftInSimulation = simulationSteps + config["MaxStepsAfterWinner"];
                     }
                     simsDoneInStep++;
-                    cleaner.setPosition(currPosition);
+                    cleaner->setPosition(currPosition);
                 }
             }
         }
@@ -145,22 +114,19 @@ void Simulator::runCompetitionOnHouse(House& house, vector<Cleaner>& cleaners)
     if (!someoneDone)
         winnerNumSteps = simulationSteps;
 
-    calculateCleanerResult(cleaners, winnerNumSteps, currPosition);
-}
+//    calculateCleanerResult(cleaners, winnerNumSteps, currPosition);
 
-void Simulator::calculateCleanerResult(const vector<Cleaner> &cleaners, int winnerNumSteps, int loserPosition)
-{
-    for (int i = 0; i < cleaners.size(); i++)
+    for (int i = 0; i < (int)cleaners.size(); i++)
     {
-        //TODO:int winnerNumSteps, int loserPosition
-        int score  = calcScore(cleaners[i].GetResult(), 0, 0);
+        //TODO:loserPosition
+        int score  = calcScore(cleaners[i]->GetResult(), winnerNumSteps,0);
         if (score == -1)
         {
             errorHouses.push_back(
                     pair<string,string>("Score formula could not calculate some scores, see -1 in the results table", ""));
         }
 
-        scoreManager->addScore(cleaners[i].algorithmName, cleaners[i].getHouseName(), score);
+        scoreManager->addScore(cleaners[i]->algorithmName, cleaners[i]->getHouseName(), score);
     }
 }
 
@@ -180,6 +146,15 @@ string Simulator::ParseScoreParam(int argc, const char **argv)
 {
     string paramPrefix = "-score";
     return ParseParam(paramPrefix, argc, argv);
+}
+
+int Simulator::ParseThreadsParam(int argc, const char **argv)
+{
+    string paramPrefix = "-threads";
+    string threadsParam = ParseParam(paramPrefix, argc, argv);
+    if (threadsParam.empty())
+        return 1;
+    return atoi(threadsParam);
 }
 
 string Simulator::ParseHouseParam(int argc, const char **argv)
@@ -226,7 +201,9 @@ void Simulator::ReadParams(int argc, const char * argv[])
 
     string houseParamPath = ParseHouseParam(argc, argv);
     string scoreFuncPath = ParseScoreParam(argc, argv);//"/Users/Roni/Desktop/working/";
-    string algosPath = ParseAlgorithmPathParam(argc, argv);
+    algorithmsPath = ParseAlgorithmPathParam(argc, argv);
+//    algorithmFiles = FileReader::ReadAlgorithms(algorithmsPath);
+    threads = ParseThreadsParam(argc, argv);
 
     auto readHouses = FileReader::ReadHouses(houseParamPath);
     houses = readHouses.first;
@@ -253,13 +230,94 @@ void Simulator::ReadParams(int argc, const char * argv[])
 
 Simulator::~Simulator()
 {
-//    config.clear();
     config.clear();
     delete scoreManager;
-//    delete houses;
-//    delete errorHouses;
-//    delete(calcScorePtr);
 }
 
+list<pair<string, unique_ptr<AbstractAlgorithm> > > Simulator::loadAlgorithms()
+{
+    PRINT_DEBUG("Loading Algorithms");
+    list<pair<string, unique_ptr<AbstractAlgorithm> > >algorithms;
+    AlgorithmRegistrar& registrar = AlgorithmRegistrar::getInstance();
 
+    for (auto algoName : algorithmFiles)
+    {
+        size_t startIndex = algoName.rfind('/');
+        string pref = algoName.substr(startIndex+1, 13);
+        //TODO:Remove Debug load
+//        registrar.loadDebugAlgorithm(algoName, pref);
+        //if (REGISTERed)
+//        errorHouses.push_back(
+//                pair<string,string>("Algorithm Load Failed", ""));
+    }
 
+    //TODO:Remove
+    registrar.loadDebugAlgorithm("", "");
+
+    PRINT_DEBUG("Getting Algos");
+    list<unique_ptr<AbstractAlgorithm> > algorithmPointers = registrar.getAlgorithms();
+    PRINT_DEBUG("Got " + to_string(algorithmPointers.size()));
+
+    vector<string> algoNames = registrar.getAlgorithmNames();
+
+    if (algorithmPointers.size() == 0)
+    {
+        cout << "All algorithm files in target folder " + algorithmsPath +  "cannot be opened or are invalid:" << endl;
+        exit(0);
+    }
+
+    int i = 0;
+    for (auto& a : algorithmPointers)
+    {
+        PRINT_DEBUG("Storing Algo Pointer");
+        algorithms.push_back(pair<string,unique_ptr<AbstractAlgorithm>>(algoNames[i], std::move(a)));
+        i++;
+    }
+    PRINT_DEBUG("Done");
+    return algorithms;
+}
+
+void Simulator::runSingleSubSimulationThread(atomic_size_t* house_shared_counter)
+{
+    for(size_t index = (*house_shared_counter)++; index < houses.size(); index = (*house_shared_counter)++)
+    {
+        if (DEBUG)
+        {
+            cout << "Thread:" << this_thread::get_id() << " running on House:" << index << endl;
+        }
+        runCompetitionOnHouse((int) index);
+    }
+}
+
+void Simulator::runSimulation(int threadsCount)
+{
+    int actualThreadsCount = threadsCount;
+    int houseCount = (int) houses.size();
+    if (houseCount < threadsCount)
+    {
+        actualThreadsCount = houseCount;
+    }
+    if (actualThreadsCount == 1)
+    {
+        for (vector<House*>::iterator it = houses.begin(); it != houses.end(); ++it)
+        {
+            runCompetitionOnHouse((int) (it - houses.begin()));
+        }
+    }
+    else
+    {
+        atomic_size_t workingHouseIndex{0};
+        PRINT_DEBUG("Running on " + to_string(actualThreadsCount) + " threads");
+
+        vector<unique_ptr<thread>> threads((unsigned long) actualThreadsCount);
+        for(auto& thread_ptr : threads)
+        {
+            thread_ptr = make_unique<thread>(&Simulator::runSingleSubSimulationThread, this, &workingHouseIndex);
+        }
+
+        for(auto& thread_ptr : threads)
+        {
+            thread_ptr->join();
+        }
+    }
+}

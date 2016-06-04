@@ -1,15 +1,8 @@
-
 #include "_306543083_N.h"
 #include <cstdlib>
 #include <string>
-#include "AlgorithmRegistration.h"
 
 using namespace std;
-
-unique_ptr<AbstractAlgorithm> _306543083_N::make_unique()
-{
-    return unique_ptr<_306543083_N>(new _306543083_N());
-}
 
 void _306543083_N::setSensor(const AbstractSensor& _sensor)
 {
@@ -90,4 +83,8 @@ void _306543083_N::saveStep(Direction d)
     stepsList.push_back(d);
 }
 
-REGISTER_ALGORITHM(_306543083_N)
+_306543083_N::_306543083_N(): AbstractAlgorithm()
+{
+}
+
+//REGISTER_ALGORITHM(_306543083_N)

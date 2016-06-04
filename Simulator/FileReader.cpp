@@ -2,6 +2,7 @@
 #include <map>
 #include <string>
 #include <cstdlib>
+#include <cstring>
 #include "FileReader.h"
 #include "FileLister.h"
 #include <dlfcn.h>
@@ -78,7 +79,7 @@ map<string, int> FileReader::ReadConfig(string dirPath) {
         }
     }
 
-    if (propertyCounter < configurationMap.size()) {
+    if (propertyCounter < (int)configurationMap.size()) {
         vector<string> missingParams;
         for (auto &keyValue : configurationMap) {
             if (keyValue.second == -1)
@@ -162,6 +163,27 @@ pair<vector<House*>,vector<pair<string,string> > > FileReader::ReadHouses(string
     }
 
     return pair<vector<House*>,vector<pair<string,string> > >(houses, errorHouses);
+}
+
+
+vector<string> FileReader::ReadAlgorithms(string dirPath)
+{
+    string fixedDirPath = dirPath;
+    if (dirPath.empty())
+    {
+        fixedDirPath = "./";
+    }
+
+    AlgorithmsLister algorithmsLister = AlgorithmsLister(fixedDirPath);
+    vector<string> algoFileNames = algorithmsLister.getFilesList();
+
+    if (!algoFileNames.size())
+    {
+        cout << usageMessage << endl;
+        exit(0);
+    }
+
+    return algoFileNames;
 }
 
 House* FileReader::input(string filePath)
@@ -292,7 +314,14 @@ score_func* FileReader::ScoreFunction(string& path, void*& filename)
 		return nullptr;
 	}
 
-	score_func* calcScorePtr = (score_func*)dlsym(filename, "calc_score");
+//    int (*f)() = 0;
+//    int *o;
+//    memcpy(&o, &f, sizeof(int*));
+
+    void* dlsim = dlsym(filename, "calc_score");
+    score_func* calcScorePtr;
+    memcpy(&calcScorePtr, &dlsim, sizeof(score_func *));
+//	score_func* calcScorePtr = (score_func*)
 	const char* dlsym_error = dlerror();
 	if (dlsym_error != nullptr)  //error in dlsym
 	{

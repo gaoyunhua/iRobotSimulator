@@ -1,9 +1,15 @@
-#include <vector>
-#include "SensorInformation.h"
-#include "Direction.h"
-#include "AbstractAlgorithm.h"
 
-class _306543083_G: public AbstractAlgorithm
+#ifndef ___306543083_G__H_
+#define ___306543083_G__H_
+
+#include <vector>
+#include <cstdlib>
+#include "Algorithm.h"
+#include <iostream>
+#include <fstream>
+#include <sstream>
+
+class _306543083_G: public Algorithm
 {
     const AbstractSensor* sensor;
 
@@ -15,12 +21,13 @@ private:
     void saveStep(Direction d);
 
 public:
-    _306543083_G(){};
-    unique_ptr<AbstractAlgorithm> make_unique();
-    void setSensor(const AbstractSensor& sensor);
-    Direction step();
-    void setConfiguration(map<string, int> config);
-    void aboutToFinish(int stepsTillFinishing);
-    Direction getDirection(const SensorInformation &locationInfo);
-    ~_306543083_G() {}
+    _306543083_G();
+    virtual void setSensor(const AbstractSensor& sensor);
+    virtual Direction step();
+    virtual void setConfiguration(map<string, int> config);
+    virtual void aboutToFinish(int stepsTillFinishing);
+    virtual Direction getDirection(const SensorInformation &locationInfo);
+    virtual ~_306543083_G();
 };
+
+#endif

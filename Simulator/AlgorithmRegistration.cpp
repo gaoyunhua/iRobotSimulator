@@ -1,16 +1,7 @@
-
-#include <memory>
-#include <iostream>
-#include <map>
-#include "AbstractAlgorithm.h"
+#include "AlgorithmRegistrar.h"
 #include "AlgorithmRegistration.h"
-#include "AlgorithmLoader.h"
+#include "my_make_unique.h"
 
-AlgorithmRegistration::AlgorithmRegistration(std::function < std::unique_ptr<AbstractAlgorithm>() > func)
-{
-    AlgorithmLoader loader = AlgorithmLoader::getInstance();
-    loader.registerAlgorithm(func);
+AlgorithmRegistration::AlgorithmRegistration(std::function<unique_ptr<AbstractAlgorithm>()> algorithmFactory) {
+    AlgorithmRegistrar::getInstance().registerAlgorithm(algorithmFactory);
 }
-
-
-

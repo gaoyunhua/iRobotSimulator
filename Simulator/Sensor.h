@@ -2,6 +2,7 @@
 #include "AbstractSensor.h"
 #include "House.h"
 #include "Point.h"
+#include "Direction.h"
 
 class Sensor : public AbstractSensor
 {

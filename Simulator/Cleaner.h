@@ -8,18 +8,24 @@
 #include "Sensor.h"
 #include "CleanerResult.h"
 #include "Point.h"
+#include "my_make_unique.h"
 
 class Cleaner
 {
-    AbstractAlgorithm& algorithm;
+    std::unique_ptr<AbstractAlgorithm> algorithm;
     AbstractSensor* sensor;
     House* house;
     const map<string, int>& configuration;
     Point& robotLocation;
 
 public:
-    Cleaner(AbstractAlgorithm& _algorithm, AbstractSensor* _sensor, House* _house, Point& _robotLocation , map<string,int>& _config, string _algoName) :
-            algorithm(_algorithm), sensor(_sensor), house(_house), robotLocation(_robotLocation), configuration(_config), algorithmName(_algoName){}
+    Cleaner(std::unique_ptr<AbstractAlgorithm>& _algorithm, AbstractSensor* _sensor, House* _house, Point& _robotLocation , map<string,int>& _config, string _algoName) :
+            algorithm(std::move(_algorithm)), sensor(_sensor), house(_house),configuration(_config), robotLocation(_robotLocation), algorithmName(_algoName){}
+
+
+    Cleaner(const Cleaner &cleaner) = delete;
+    Cleaner& operator=(const Cleaner&) = delete;
+    ~Cleaner() { };
 
     void clean();
     void Step();
@@ -29,7 +35,7 @@ public:
     bool isDone() { return didFinishCleaning || didStopSimulation; }
     CleanerResult GetResult() const;
     CleanerResult stopSimulation();
-    void aboutToFinish(int stepsTillFinish){ algorithm.aboutToFinish(stepsTillFinish); }
+    void aboutToFinish(int stepsTillFinish){ algorithm->aboutToFinish(stepsTillFinish); }
     bool isRobotAtDock() { return robotLocation.equals(house->findDocking()); }
     bool getDidFinishCleaning() { return didFinishCleaning; }
 

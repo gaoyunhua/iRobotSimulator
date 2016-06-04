@@ -4,8 +4,9 @@
 
 #include <vector>
 #include "AbstractAlgorithm.h"
-#include "House.h"
 #include "AbstractSensor.h"
+#include "AlgorithmRegistration.h"
+#include "my_make_unique.h"
 
 class _306543083_N : public AbstractAlgorithm
 {
@@ -18,8 +19,7 @@ private:
     int steps;
 
 public:
-    _306543083_N(){};
-    unique_ptr<AbstractAlgorithm> make_unique();
+    _306543083_N();
     void setSensor(const AbstractSensor& sensor);
     Direction step();
     void setConfiguration(map<string, int> config);

@@ -1,6 +1,5 @@
 
 #include "Sensor.h"
-#include "Direction.h"
 
 SensorInformation Sensor::sense() const
 {

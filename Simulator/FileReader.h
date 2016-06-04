@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 #include "FileReader.h"
-#import "House.h"
+#include "House.h"
 
 using namespace std;
 
@@ -29,6 +29,7 @@ private:
 public:
     static map<string,int> ReadConfig(string dirPath);
     static pair<vector<House*>,vector<pair<string,string> > > ReadHouses(string dirPath);
+    static vector<string> ReadAlgorithms(string dirPath);
     static score_func* ScoreFunction(string& path, void*& filename);
 
     static vector<string> GetFilesFromDir(string dir, string suffix);
