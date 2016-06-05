@@ -31,12 +31,12 @@ void Cleaner::Step()
     Direction moveDirection = algorithm->step();
 
     Point newRobotLocation = Point::GetPointByDirection(robotLocation, moveDirection);
-    PRINT_DEBUG(
-            "Moving:(" +
-                    to_string(robotLocation.getX()) +
-                    "," + to_string(robotLocation.getY())  +
-                    ")-->(" + to_string(newRobotLocation.getX()) +
-                    "," + to_string(newRobotLocation.getY()) + ")");
+//    PRINT_DEBUG(
+//            "Moving:(" +
+//                    to_string(robotLocation.getX()) +
+//                    "," + to_string(robotLocation.getY())  +
+//                    ")-->(" + to_string(newRobotLocation.getX()) +
+//                    "," + to_string(newRobotLocation.getY()) + ")");
 
     if (newRobotLocation.equals(house->findDocking()))
     {

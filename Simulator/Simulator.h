@@ -8,6 +8,17 @@
 #include "ScoreManager.h"
 #include "Cleaner.h"
 #include <map>
+#include "AlgorithmRegistrar.h"
+#include <vector>
+#include <list>
+#include "Debugger.h"
+#include "AbstractAlgorithm.h"
+#include "my_make_unique.h"
+#include <thread>
+#include <atomic>
+#include <functional>
+#include <iomanip>
+#include <sstream>
 
 
 using namespace std;
@@ -35,8 +46,8 @@ private:
     score_func* calcScorePtr;
     map<string,int> config;
     int threads;
-    int calcScore(const CleanerResult &simStats, int winnerNumSteps, int loserPosition) const;
-    void printResults();
+    int calcScore(const CleanerResult &cleanerResult, int winnerNumSteps, int loserPosition) const;
+    void printResults(bool withScoreTable);
     string algorithmsPath;
     ScoreManager* scoreManager;
     void runCompetitionOnHouse(int houseIndex);

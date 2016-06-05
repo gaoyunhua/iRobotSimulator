@@ -95,7 +95,7 @@ public:
 class AlgorithmsLister : public FilesListerWithSuffix {
 public:
     AlgorithmsLister(const string &basePath)
-            : FilesListerWithSuffix(basePath, ".so") {
+            : FilesListerWithSuffix(basePath, "_.so") {
     }
 };
 

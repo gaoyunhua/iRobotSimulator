@@ -15,7 +15,7 @@
 using namespace std;
 
 class AlgorithmRegistrar {
-    list<void*> dl_list;
+    list<void*> dlList;
     list<std::string> algorithmNames;
     list<std::function<unique_ptr<AbstractAlgorithm>()>> algorithmFactories;
 
@@ -32,8 +32,8 @@ public:
     friend class AlgorithmRegistration;
     enum {ALGORITHM_REGISTERED_SUCCESSFULY = 0, FILE_CANNOT_BE_LOADED = -1, NO_ALGORITHM_REGISTERED = -2};
     int loadAlgorithm(const std::string& path, const std::string& so_file_name_without_so_suffix);
-
     int loadDebugAlgorithm(const string &path, const string &so_file_name_without_so_suffix);
+    void clear();
 
     list<unique_ptr<AbstractAlgorithm>> getAlgorithms()const {
         list<unique_ptr<AbstractAlgorithm>> algorithms;

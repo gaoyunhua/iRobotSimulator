@@ -1,7 +1,7 @@
 
 #include "AlgorithmRegistrar.h"
-#include "_306543083_G.h"
-#include "_306543083_N.h"
+//#include "_306543083_G.h"
+//#include "_306543083_N.h"
 
 using namespace std;
 
@@ -10,6 +10,7 @@ int AlgorithmRegistrar::loadAlgorithm(const string& path, const string& so_file_
     void * dlib;
     size_t size = instance.size();
     PRINT_DEBUG("About to DLOPEN, Registrar size:" + to_string(size));
+    PRINT_DEBUG("Opening: " + path + "\nFileName:" + so_file_name_without_so_suffix);
     dlib = dlopen(path.c_str(), RTLD_NOW);
     PRINT_DEBUG("Past DLOPEN");
 
@@ -27,22 +28,29 @@ int AlgorithmRegistrar::loadAlgorithm(const string& path, const string& so_file_
     PRINT_DEBUG("Registrar size:" + to_string(instance.size()) + " Continuing to set algo name");
     instance.setNameForLastAlgorithm(so_file_name_without_so_suffix);
     PRINT_DEBUG("Algo name set. Storing Handler");
-    instance.dl_list.push_back(dlib);
+    instance.dlList.push_back(dlib);
     PRINT_DEBUG("Stored Handler");
     return ALGORITHM_REGISTERED_SUCCESSFULY;
 }
 
 int AlgorithmRegistrar::loadDebugAlgorithm(const string& path, const string& so_file_name_without_so_suffix)
 {
-    std::function<unique_ptr<AbstractAlgorithm>()> a = ([]{return make_unique<_306543083_G>();} );
-    std::function<unique_ptr<AbstractAlgorithm>()> b = ([]{return make_unique<_306543083_N>();} );
-    instance.algorithmFactories.push_back(a);
-    instance.setNameForLastAlgorithm("306543083_G_");
-    instance.algorithmFactories.push_back(b);
-    instance.setNameForLastAlgorithm("306543083_N_");
-
-//    instance.setNameForLastAlgorithm(so_file_name_without_so_suffix);
+//    std::function<unique_ptr<AbstractAlgorithm>()> a = ([]{return make_unique<_306543083_G>();} );
+//    std::function<unique_ptr<AbstractAlgorithm>()> b = ([]{return make_unique<_306543083_N>();} );
+//    instance.algorithmFactories.push_back(a);
+//    instance.setNameForLastAlgorithm("306543083_G_");
+//    instance.algorithmFactories.push_back(b);
+//    instance.setNameForLastAlgorithm("306543083_N_");
     return ALGORITHM_REGISTERED_SUCCESSFULY;
+}
+
+void AlgorithmRegistrar::clear()
+{
+    algorithmFactories.clear();
+    for (auto itr = dlList.begin(); itr != dlList.end(); ++itr)
+    {
+        dlclose(*itr);
+    }
 }
 
 AlgorithmRegistrar AlgorithmRegistrar::instance;

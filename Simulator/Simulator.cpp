@@ -1,16 +1,6 @@
-#include <iomanip>
-#include <sstream>
+
 #include "Simulator.h"
-#include "Cleaner.h"
-#include "AlgorithmRegistrar.h"
-#include <vector>
-#include <list>
-#include "Debugger.h"
-#include "AbstractAlgorithm.h"
-#include "my_make_unique.h"
-#include <thread>
-#include <atomic>
-#include <functional>
+
 
 extern "C" int calc_score(const std::map<std::string, int>& score_params);
 
@@ -20,12 +10,14 @@ void Simulator::Simulate(int argc, const char * argv[])
     ReadParams(argc, argv);
     scoreManager = new ScoreManager();
     runSimulation(threads);
-    printResults();
+    printResults(true);
 }
 
-void Simulator::printResults()
+void Simulator::printResults(bool withScoreTable)
 {
-    scoreManager->printScoreTable();
+    if (withScoreTable)
+        scoreManager->printScoreTable();
+
     for (auto& invalidHouse : errorHouses)
     {
         string msg = invalidHouse.first + (invalidHouse.second.empty() ? "" : ": " + invalidHouse.second);
@@ -56,36 +48,35 @@ void Simulator::runCompetitionOnHouse(int houseIndex)
         PRINT_DEBUG("Cleaner Ready");
     }
 
-
     bool allDone = false;
     bool someoneDone = false;
     int winnerNumSteps = 0;
     int simulationSteps = 0;
     int stepLeftInSimulation = cleaners[0]->getHouseMaxSteps() - 1;
-    list< map<Cleaner, int> > positions;
     int currPosition = 1;
 
     while (!allDone && simulationSteps <= stepLeftInSimulation){
-        //loop ends only when all sims are done
         allDone = true;
         int simsDoneInStep = 0;
-        for (auto& cleaner : cleaners){
+        for (auto& cleaner : cleaners)
+        {
             cleaner->Step();
 
-            //if sim is not done yet
-            if (!(cleaner->isDone())){
+            if (!(cleaner->isDone()))
+            {
                 allDone = false;	//if at least one sim hasn't finished -> allDone = false
                 //sim->makeStep();
             }
 
-            else{	//this simulation is done
-                PRINT_DEBUG("sim for algorithm: " << cleaner->algorithmName << " done");
+            else
+            {
                 //if the simulation finished in this round and house is clean
                 if ( cleaner->getDidFinishCleaning() && cleaner->isRobotAtDock() ){
                     PRINT_DEBUG("algorithm: " << cleaner->algorithmName << " finishing for first time");
                     //this is the first simulation to finish
-                    if (!someoneDone){
-                        PRINT_DEBUG("first winner!! on step: " << cleaner->steps);
+                    if (!someoneDone)
+                    {
+                        PRINT_DEBUG("first winner!! Steps: " << cleaner->steps);
                         someoneDone = true;
                         winnerNumSteps = cleaner->steps;
 
@@ -98,7 +89,6 @@ void Simulator::runCompetitionOnHouse(int houseIndex)
                                 remainingCleaner->aboutToFinish(config["MaxStepsAfterWinner"]);
                         }
 
-                        //update simulation stoping condition
                         stepLeftInSimulation = simulationSteps + config["MaxStepsAfterWinner"];
                     }
                     simsDoneInStep++;
@@ -110,16 +100,12 @@ void Simulator::runCompetitionOnHouse(int houseIndex)
         simulationSteps++;
     }
 
-    //if no one finished cleaning the house
     if (!someoneDone)
         winnerNumSteps = simulationSteps;
 
-//    calculateCleanerResult(cleaners, winnerNumSteps, currPosition);
-
     for (int i = 0; i < (int)cleaners.size(); i++)
     {
-        //TODO:loserPosition
-        int score  = calcScore(cleaners[i]->GetResult(), winnerNumSteps,0);
+        int score  = calcScore(cleaners[i]->GetResult(), winnerNumSteps,currPosition);
         if (score == -1)
         {
             errorHouses.push_back(
@@ -154,7 +140,7 @@ int Simulator::ParseThreadsParam(int argc, const char **argv)
     string threadsParam = ParseParam(paramPrefix, argc, argv);
     if (threadsParam.empty())
         return 1;
-    return atoi(threadsParam);
+    return stoi(threadsParam);
 }
 
 string Simulator::ParseHouseParam(int argc, const char **argv)
@@ -179,17 +165,15 @@ string Simulator::ParseParam(string paramPrefix, int argc, const char* argv[])
     return "";
 }
 
-//updates score_params with values
-int Simulator::calcScore(const CleanerResult& simStats, int winnerNumSteps, int loserPosition) const
+int Simulator::calcScore(const CleanerResult& cleanerResult, int winnerNumSteps, int loserPosition) const
 {
     map<string, int> score_params;
-
-    score_params["actual_position_in_competition"] = simStats.getActualPosition(loserPosition);
+    score_params["actual_position_in_competition"] = cleanerResult.getActualPosition(loserPosition);
     score_params["winner_num_steps"] = winnerNumSteps;
-    score_params["this_num_steps"] = simStats.numOfSteps;
-    score_params["sum_dirt_in_house"] = simStats.sumDirtInHouse;
-    score_params["dirt_collected"] = simStats.sumDirtCollected;
-    score_params["is_back_in_docking"] = simStats.isBackInDocking;
+    score_params["this_num_steps"] = cleanerResult.numOfSteps;
+    score_params["sum_dirt_in_house"] = cleanerResult.sumDirtInHouse;
+    score_params["dirt_collected"] = cleanerResult.sumDirtCollected;
+    score_params["is_back_in_docking"] = cleanerResult.isBackInDocking;
 
     return calcScorePtr(score_params);
 }
@@ -200,9 +184,9 @@ void Simulator::ReadParams(int argc, const char * argv[])
     config = FileReader::ReadConfig(configParamPath);
 
     string houseParamPath = ParseHouseParam(argc, argv);
-    string scoreFuncPath = ParseScoreParam(argc, argv);//"/Users/Roni/Desktop/working/";
+    string scoreFuncPath = ParseScoreParam(argc, argv);
     algorithmsPath = ParseAlgorithmPathParam(argc, argv);
-//    algorithmFiles = FileReader::ReadAlgorithms(algorithmsPath);
+    algorithmFiles = FileReader::ReadAlgorithms(algorithmsPath);
     threads = ParseThreadsParam(argc, argv);
 
     auto readHouses = FileReader::ReadHouses(houseParamPath);
@@ -243,16 +227,22 @@ list<pair<string, unique_ptr<AbstractAlgorithm> > > Simulator::loadAlgorithms()
     for (auto algoName : algorithmFiles)
     {
         size_t startIndex = algoName.rfind('/');
-        string pref = algoName.substr(startIndex+1, 13);
-        //TODO:Remove Debug load
-//        registrar.loadDebugAlgorithm(algoName, pref);
-        //if (REGISTERed)
-//        errorHouses.push_back(
-//                pair<string,string>("Algorithm Load Failed", ""));
+        string pref = algoName.substr(startIndex+1, 12);
+
+        int result = registrar.loadAlgorithm(algoName, pref);
+        if (result == -1)
+        {
+            errorHouses.push_back(pair<string,string>(pref + "file cannot be loaded or is not a valid .so", ""));
+        }
+        else if (result == -2)
+        {
+            errorHouses.push_back(pair<string,string>(pref + "valid .so but no algorithm was registered after loading it", ""));
+        }
+        //TODO:REMOVE DEBUG LOAD
     }
 
     //TODO:Remove
-    registrar.loadDebugAlgorithm("", "");
+//    registrar.loadDebugAlgorithm("", "");
 
     PRINT_DEBUG("Getting Algos");
     list<unique_ptr<AbstractAlgorithm> > algorithmPointers = registrar.getAlgorithms();
@@ -263,6 +253,7 @@ list<pair<string, unique_ptr<AbstractAlgorithm> > > Simulator::loadAlgorithms()
     if (algorithmPointers.size() == 0)
     {
         cout << "All algorithm files in target folder " + algorithmsPath +  "cannot be opened or are invalid:" << endl;
+        printResults(false);
         exit(0);
     }
 
