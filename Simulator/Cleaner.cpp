@@ -25,6 +25,7 @@ void Cleaner::Step()
     if (batteryLevel <= 0)
     {
         PRINT_DEBUG("Battery dead");
+        didStopSimulation = true;
         return;
     }
 
