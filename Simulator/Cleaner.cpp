@@ -28,7 +28,7 @@ void Cleaner::Step()
         return;
     }
 
-    Direction moveDirection = algorithm->step();
+    Direction moveDirection = algorithm->step(prevStep);
 
     Point newRobotLocation = Point::GetPointByDirection(robotLocation, moveDirection);
 //    PRINT_DEBUG(
@@ -43,8 +43,6 @@ void Cleaner::Step()
         robotAtDock(rechargeRate, newRobotLocation, steps, batteryLevel);
     }
 
-
-
     if (house->isWall(newRobotLocation))
     {
         PRINT_DEBUG("Robot crashed into a wall!");
@@ -53,6 +51,7 @@ void Cleaner::Step()
 
     robotLocation.move(moveDirection);
     performStep(steps, dirtCleaned, batteryLevel);
+    prevStep = moveDirection;
     steps++;
 }
 
@@ -76,7 +75,7 @@ void Cleaner::robotAtDock(int rechargeRate,Point &newRobotLocation, int &steps, 
 {
     int capacity = configuration.at("BatteryCapacity");
     batteryLevel = min(capacity, batteryLevel + rechargeRate);
-    cout << "Robot At Dock" << endl;
+//    PRINT_DEBUG("Robot At Dock");
 }
 
 CleanerResult Cleaner::stopSimulation()

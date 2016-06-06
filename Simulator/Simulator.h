@@ -27,7 +27,8 @@ class Simulator
 {
 public:
     void Simulate(int argc, const char * argv[]);
-    list<pair<string, unique_ptr<AbstractAlgorithm> > > loadAlgorithms();
+    void loadAlgorithms();
+    list<pair<string, unique_ptr<AbstractAlgorithm> > > getLoadedAlgorithms();
 
     string ParseConfigParam(int argc, const char **argv);
     string ParseHouseParam(int argc, const char **argv);

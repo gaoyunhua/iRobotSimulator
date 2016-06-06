@@ -9,8 +9,10 @@ void Simulator::Simulate(int argc, const char * argv[])
     PRINT_DEBUG("Reading Params");
     ReadParams(argc, argv);
     scoreManager = new ScoreManager();
+    loadAlgorithms();
     runSimulation(threads);
     printResults(true);
+    AlgorithmRegistrar::getInstance().clear();
 }
 
 void Simulator::printResults(bool withScoreTable)
@@ -29,7 +31,7 @@ void Simulator::runCompetitionOnHouse(int houseIndex)
 {
     House& house = *houses[houseIndex];
     vector<unique_ptr<Cleaner>> cleaners;
-    list<pair<string, unique_ptr<AbstractAlgorithm> > >algorithms = loadAlgorithms();
+    list<pair<string, unique_ptr<AbstractAlgorithm> > >algorithms = getLoadedAlgorithms();
 
     PRINT_DEBUG("Done fetching Algos");
     for (auto& algo : algorithms)
@@ -218,10 +220,9 @@ Simulator::~Simulator()
     delete scoreManager;
 }
 
-list<pair<string, unique_ptr<AbstractAlgorithm> > > Simulator::loadAlgorithms()
+void Simulator::loadAlgorithms()
 {
     PRINT_DEBUG("Loading Algorithms");
-    list<pair<string, unique_ptr<AbstractAlgorithm> > >algorithms;
     AlgorithmRegistrar& registrar = AlgorithmRegistrar::getInstance();
 
     for (auto algoName : algorithmFiles)
@@ -256,17 +257,26 @@ list<pair<string, unique_ptr<AbstractAlgorithm> > > Simulator::loadAlgorithms()
         printResults(false);
         exit(0);
     }
+}
 
+list<pair<string, unique_ptr<AbstractAlgorithm> > > Simulator::getLoadedAlgorithms()
+{
+    PRINT_DEBUG("Getting Algos");
+    AlgorithmRegistrar& registrar = AlgorithmRegistrar::getInstance();
+    list<pair<string, unique_ptr<AbstractAlgorithm> > >algorithms;
+    list<unique_ptr<AbstractAlgorithm> > algorithmPointers = registrar.getAlgorithms();
+    PRINT_DEBUG("Got " + to_string(algorithmPointers.size()));
+    vector<string> algoNames = registrar.getAlgorithmNames();
     int i = 0;
+
     for (auto& a : algorithmPointers)
     {
-        PRINT_DEBUG("Storing Algo Pointer");
         algorithms.push_back(pair<string,unique_ptr<AbstractAlgorithm>>(algoNames[i], std::move(a)));
         i++;
     }
-    PRINT_DEBUG("Done");
     return algorithms;
 }
+
 
 void Simulator::runSingleSubSimulationThread(atomic_size_t* house_shared_counter)
 {

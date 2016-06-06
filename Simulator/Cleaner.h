@@ -17,6 +17,7 @@ class Cleaner
     House* house;
     const map<string, int>& configuration;
     Point& robotLocation;
+    Direction prevStep = Direction::Stay;
 
 public:
     Cleaner(std::unique_ptr<AbstractAlgorithm>& _algorithm, AbstractSensor* _sensor, House* _house, Point& _robotLocation , map<string,int>& _config, string _algoName) :
