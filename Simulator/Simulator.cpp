@@ -244,7 +244,7 @@ void Simulator::loadAlgorithms()
     }
 
     //TODO:Remove
-    registrar.loadDebugAlgorithm("", "");
+//    registrar.loadDebugAlgorithm("", "");
 
     PRINT_DEBUG("Getting Algos");
     list<unique_ptr<AbstractAlgorithm> > algorithmPointers = registrar.getAlgorithms();
