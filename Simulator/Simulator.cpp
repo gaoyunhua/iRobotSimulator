@@ -226,22 +226,22 @@ void Simulator::loadAlgorithms()
     PRINT_DEBUG("Loading Algorithms");
     AlgorithmRegistrar& registrar = AlgorithmRegistrar::getInstance();
 
-//    for (auto algoName : algorithmFiles)
-//    {
-//        size_t startIndex = algoName.rfind('/');
-//        string pref = algoName.substr(startIndex+1, 12);
-//
-//        int result = registrar.loadAlgorithm(algoName, pref);
-//        if (result == -1)
-//        {
-//            errorHouses.push_back(pair<string,string>(pref + "file cannot be loaded or is not a valid .so", ""));
-//        }
-//        else if (result == -2)
-//        {
-//            errorHouses.push_back(pair<string,string>(pref + "valid .so but no algorithm was registered after loading it", ""));
-//        }
-//        //TODO:REMOVE DEBUG LOAD
-//    }
+    for (auto algoName : algorithmFiles)
+    {
+        size_t startIndex = algoName.rfind('/');
+        string pref = algoName.substr(startIndex+1, 12);
+
+        int result = registrar.loadAlgorithm(algoName, pref);
+        if (result == -1)
+        {
+            errorHouses.push_back(pair<string,string>(pref + "file cannot be loaded or is not a valid .so", ""));
+        }
+        else if (result == -2)
+        {
+            errorHouses.push_back(pair<string,string>(pref + "valid .so but no algorithm was registered after loading it", ""));
+        }
+        //TODO:REMOVE DEBUG LOAD
+    }
 
     //TODO:Remove
     registrar.loadDebugAlgorithm("", "");
@@ -252,12 +252,12 @@ void Simulator::loadAlgorithms()
 
     vector<string> algoNames = registrar.getAlgorithmNames();
 
-//    if (algorithmPointers.size() == 0)
-//    {
-//        cout << "All algorithm files in target folder " + algorithmsPath +  "cannot be opened or are invalid:" << endl;
-//        printResults(false);
-//        exit(0);
-//    }
+    if (algorithmPointers.size() == 0)
+    {
+        cout << "All algorithm files in target folder " + algorithmsPath +  "cannot be opened or are invalid:" << endl;
+        printResults(false);
+        exit(0);
+    }
 }
 
 list<pair<string, unique_ptr<AbstractAlgorithm> > > Simulator::getLoadedAlgorithms()
