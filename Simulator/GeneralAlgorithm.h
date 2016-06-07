@@ -16,6 +16,17 @@
 #include "Battery.h"
 #include <vector>
 
+enum ALGO_STATE_ENUM
+{
+	LOOK_FOR_CLOSEST_N,
+	LOOK_FOR_BORDER_N,
+	CLEANING,
+	GO_TO_RECHARGE,
+	RECHARGING,
+	LOOK_FOR_DIRT,
+	UNDEFINED
+};
+
 
 class GeneralAlgorithm : public AbstractAlgorithm
 {

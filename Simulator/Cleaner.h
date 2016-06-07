@@ -32,13 +32,13 @@ public:
     void Step();
     void robotAtDock(int rechargeRate, Point &newRobotLocation, int &steps, int &batteryLevel);
     void performStep(int &steps, int &dirtCleaned, int &batteryLevel);
-
-    bool isDone() { return didFinishCleaning || didStopSimulation; }
+    bool didStopSimulatiion() { return didStopSimulation; }
+    bool isDone() { return didFinishCleaning || didStopSimulation || didCrash; }
     CleanerResult GetResult() const;
     CleanerResult stopSimulation();
     void aboutToFinish(int stepsTillFinish){ algorithm->aboutToFinish(stepsTillFinish); }
     bool isRobotAtDock() { return robotLocation.equals(house->findDocking()); }
-    bool getDidFinishCleaning() { return didFinishCleaning; }
+    bool getDidFinishCleaning() { return didFinishCleaning && isRobotAtDock(); }
 
     string getHouseName() const { return house->name; }
     int getHouseMaxSteps() { return house->maxSteps; }
@@ -49,7 +49,7 @@ public:
 private:
     void printHouse(int iRob, int jRob);
     int dirtCleaned, sumOfDirt, maxSteps, batteryLevel, rechargeRate, position;
-    bool didStopSimulation, didFinishCleaning;
+    bool didStopSimulation, didFinishCleaning, didCrash;
 
 };
 

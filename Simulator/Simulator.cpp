@@ -57,23 +57,25 @@ void Simulator::runCompetitionOnHouse(int houseIndex)
     int stepLeftInSimulation = cleaners[0]->getHouseMaxSteps() - 1;
     int currPosition = 1;
 
-    while (!allDone && simulationSteps <= stepLeftInSimulation){
+    while (!allDone && simulationSteps <= stepLeftInSimulation)
+    {
         allDone = true;
         int simsDoneInStep = 0;
         for (auto& cleaner : cleaners)
         {
+            if (cleaner->getDidFinishCleaning())
+                continue;
+
             cleaner->Step();
-
-            if (!(cleaner->isDone()))
+            if (!(cleaner->getDidFinishCleaning()))
             {
-                allDone = false;	//if at least one sim hasn't finished -> allDone = false
-                //sim->makeStep();
+                allDone = false;
             }
-
             else
             {
                 //if the simulation finished in this round and house is clean
-                if ( cleaner->getDidFinishCleaning() && cleaner->isRobotAtDock() ){
+                if (cleaner->getDidFinishCleaning())
+                {
                     PRINT_DEBUG("algorithm: " << cleaner->algorithmName << " finishing for first time");
                     //this is the first simulation to finish
                     if (!someoneDone)
@@ -83,7 +85,8 @@ void Simulator::runCompetitionOnHouse(int houseIndex)
                         winnerNumSteps = cleaner->steps;
 
                         //signal all sims first algo has finished
-                        for (auto& remainingCleaner : cleaners){
+                        for (auto& remainingCleaner : cleaners)
+                        {
                             //this sim has already done a step in this round
                             if (remainingCleaner->steps > simulationSteps)
                                 remainingCleaner->aboutToFinish(config["MaxStepsAfterWinner"] - 1);
@@ -94,9 +97,10 @@ void Simulator::runCompetitionOnHouse(int houseIndex)
                         stepLeftInSimulation = simulationSteps + config["MaxStepsAfterWinner"];
                     }
                     simsDoneInStep++;
-                    cleaner->setPosition(currPosition);
                 }
             }
+            if (!cleaner->getDidFinishCleaning())
+                cleaner->setPosition(currPosition);
         }
         currPosition += simsDoneInStep;
         simulationSteps++;

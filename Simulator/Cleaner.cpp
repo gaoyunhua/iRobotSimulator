@@ -12,6 +12,7 @@ void Cleaner::clean()
     rechargeRate = configuration.at("BatteryRechargeRate");
     didStopSimulation = false;
     didFinishCleaning = false;
+    didCrash = false;
 
     algorithm->setConfiguration(configuration);
     AbstractSensor& a = *sensor;
@@ -21,6 +22,8 @@ void Cleaner::clean()
 void Cleaner::Step()
 {
 //    printHouse(robotLocation.getX(), robotLocation.getY());
+    if (getDidFinishCleaning())
+        return;
 
     if (batteryLevel <= 0)
     {
@@ -47,18 +50,18 @@ void Cleaner::Step()
     if (house->isWall(newRobotLocation))
     {
         PRINT_DEBUG("Robot crashed into a wall!");
-        didStopSimulation = true;
+        didCrash = true;
     }
 
-    robotLocation.move(moveDirection);
     performStep(steps, dirtCleaned, batteryLevel);
+    robotLocation.move(moveDirection);
     prevStep = moveDirection;
     steps++;
 }
 
 CleanerResult Cleaner::GetResult() const
 {
-    if (didStopSimulation)
+    if (didCrash)
         return CleanerResult();
 
     return CleanerResult(steps, sumOfDirt, dirtCleaned, robotLocation.equals(house->findDocking()), position);
@@ -70,6 +73,10 @@ void Cleaner::performStep(int &steps, int &dirtCleaned, int &batteryLevel)
 
     int batteryConsumptionPerMove = configuration.at("BatteryConsumptionRate");
     batteryLevel = max(0, batteryLevel - batteryConsumptionPerMove);
+    if (dirtCleaned == sumOfDirt)
+    {
+        didFinishCleaning = true;
+    }
 }
 
 void Cleaner::robotAtDock(int rechargeRate,Point &newRobotLocation, int &steps, int &batteryLevel)

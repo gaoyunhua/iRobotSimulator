@@ -81,10 +81,10 @@ Direction _312908205_C::step(Direction lastStep)
 		break;
 	case GO_TO_RECHARGE:
 		if (shortestPathToDock.size() == 0){
-			cout << "algo state is: " << algo_state << " offset is: " << offset.x << " " << offset.y << endl; //karina delete
+//			cout << "algo state is: " << algo_state << " offset is: " << offset.x << " " << offset.y << endl; //karina delete
 			//algo_state = checkState(battery, offset);
-			cout << houseMap.bfs(offset, shortestPathToDock, MAP_CHAR_D) << endl;
-			cout << "algo state is: " << algo_state << " offset is: " << offset.x << " " << offset.y << endl; //karina delete
+//			cout << houseMap.bfs(offset, shortestPathToDock, MAP_CHAR_D) << endl;
+//			cout << "algo state is: " << algo_state << " offset is: " << offset.x << " " << offset.y << endl; //karina delete
 		}
 		chosen_dir = getDirByPath(offset, lastStep, last_suggested_dir, shortestPathToDock);
 		if (DEBUG)
@@ -313,4 +313,4 @@ bool _312908205_C::IsTouchingWall(SensorInformation sensation) const
 	}
 }
 
-REGISTER_ALGORITHM(_312908205_C)
+//REGISTER_ALGORITHM(_312908205_C)

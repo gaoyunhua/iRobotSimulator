@@ -28,7 +28,9 @@ set(SOURCE_FILES
         score_formula.cpp
         Debugger.h
         AlgorithmRegistration.h AlgorithmRegistration.cpp Algorithm.cpp
-        ScoreManager.cpp ScoreManager.h my_make_unique.h _306543083_G.cpp _306543083_N.cpp _312908205_A.h _312908205_A.cpp _312908205_B.h _312908205_B.cpp _312908205_C.h _312908205_C.cpp)
+        ScoreManager.cpp ScoreManager.h my_make_unique.h
+        _312908205_A.h _312908205_A.cpp _312908205_B.h _312908205_B.cpp _312908205_C.h _312908205_C.cpp
+        GeneralAlgorithm.h GeneralAlgorithm.cpp Location.cpp Location.h Battery.h Common.h Common.cpp HouseMap2.cpp HouseMap2.h)
 
 #AbstractAlgorithm.h is part of BOTH
 

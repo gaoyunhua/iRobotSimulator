@@ -1,7 +1,9 @@
 
 #include "AlgorithmRegistrar.h"
-//#include "_306543083_G.h"
-//#include "_306543083_N.h"
+
+//#include "_312908205_A.h"
+//#include "_312908205_B.h"
+//#include "_312908205_C.h"
 
 using namespace std;
 
@@ -35,12 +37,15 @@ int AlgorithmRegistrar::loadAlgorithm(const string& path, const string& so_file_
 
 int AlgorithmRegistrar::loadDebugAlgorithm(const string& path, const string& so_file_name_without_so_suffix)
 {
-//    std::function<unique_ptr<AbstractAlgorithm>()> a = ([]{return make_unique<_306543083_G>();} );
-//    std::function<unique_ptr<AbstractAlgorithm>()> b = ([]{return make_unique<_306543083_N>();} );
+//    std::function<unique_ptr<AbstractAlgorithm>()> a = ([]{return make_unique<_312908205_A>();} );
+//    std::function<unique_ptr<AbstractAlgorithm>()> b = ([]{return make_unique<_312908205_B>();} );
+//    std::function<unique_ptr<AbstractAlgorithm>()> c = ([]{return make_unique<_312908205_C>();} );
 //    instance.algorithmFactories.push_back(a);
-//    instance.setNameForLastAlgorithm("306543083_G_");
+//    instance.setNameForLastAlgorithm("312908205_A_");
 //    instance.algorithmFactories.push_back(b);
-//    instance.setNameForLastAlgorithm("306543083_N_");
+//    instance.setNameForLastAlgorithm("312908205_B_");
+//    instance.algorithmFactories.push_back(c);
+//    instance.setNameForLastAlgorithm("312908205_C_");
     return ALGORITHM_REGISTERED_SUCCESSFULY;
 }
 

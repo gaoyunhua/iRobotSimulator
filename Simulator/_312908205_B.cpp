@@ -319,4 +319,4 @@ Direction _312908205_B::getWallOnTheRightDir(const SensorInformation& sensation)
 	return goTo;
 }
 
-REGISTER_ALGORITHM(_312908205_B)
+//REGISTER_ALGORITHM(_312908205_B)

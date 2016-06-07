@@ -29,7 +29,7 @@ void ScoreManager::printScoreTable()
     cout << "|             |";
     map<string, int>::iterator hitr;
     for (hitr = aitr->second.begin(); hitr != aitr->second.end(); ++hitr) {
-        int len = (int) ((9 < hitr->first.size()) ? 9 : hitr->first.size());
+        int len = (int) ((hitr->first.size() > 9) ? 9 : hitr->first.size());
         string hName = hitr->first.substr(0, len);
         cout << hName << string(10 - len, ' ') << '|';
     }

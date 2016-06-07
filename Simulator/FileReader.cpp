@@ -177,18 +177,17 @@ vector<string> FileReader::ReadAlgorithms(string dirPath)
     AlgorithmsLister algorithmsLister = AlgorithmsLister(fixedDirPath);
     vector<string> algoFileNames = algorithmsLister.getFilesList();
 
-//    if (!algoFileNames.size())
-//    {
-//        cout << usageMessage << endl;
-//        exit(0);
-//    }
+    if (!algoFileNames.size())
+    {
+        cout << usageMessage << endl;
+        exit(0);
+    }
 
     return algoFileNames;
 }
 
 House* FileReader::input(string filePath)
 {
-//    cout << "Reading house from file: " + filePath << endl;
     ifstream fin(filePath);
 
     string name, steps;
@@ -213,8 +212,6 @@ House* FileReader::input(string filePath)
         getline(fin, rowString);
         for (int i = 0; i < rows; i++)
         {
-//            char* row = hh[i];
-//            string rowString = (string)row;
             rowString = "";
             getline(fin, rowString);
             strncpy(hh[i], rowString.c_str(), (size_t)cols);
