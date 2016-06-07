@@ -63,41 +63,35 @@ void Simulator::runCompetitionOnHouse(int houseIndex)
         int simsDoneInStep = 0;
         for (auto& cleaner : cleaners)
         {
-            if (cleaner->getDidFinishCleaning())
-                continue;
-
-            cleaner->Step();
             if (!(cleaner->getDidFinishCleaning()))
             {
+                cleaner->Step();
                 allDone = false;
             }
             else
             {
                 //if the simulation finished in this round and house is clean
-                if (cleaner->getDidFinishCleaning())
+                PRINT_DEBUG("algorithm: " << cleaner->algorithmName << " finishing for first time");
+                //this is the first simulation to finish
+                if (!someoneDone)
                 {
-                    PRINT_DEBUG("algorithm: " << cleaner->algorithmName << " finishing for first time");
-                    //this is the first simulation to finish
-                    if (!someoneDone)
+                    PRINT_DEBUG("first winner!! Steps: " << cleaner->steps);
+                    someoneDone = true;
+                    winnerNumSteps = cleaner->steps;
+                    cleaner->setPosition(currPosition);
+
+                    for (auto& remainingCleaner : cleaners)
                     {
-                        PRINT_DEBUG("first winner!! Steps: " << cleaner->steps);
-                        someoneDone = true;
-                        winnerNumSteps = cleaner->steps;
-                        cleaner->setPosition(currPosition);
-
-                        for (auto& remainingCleaner : cleaners)
-                        {
-                            //this sim has already done a step in this round
-                            if (remainingCleaner->steps > simulationSteps)
-                                remainingCleaner->aboutToFinish(config["MaxStepsAfterWinner"] - 1);
-                            else
-                                remainingCleaner->aboutToFinish(config["MaxStepsAfterWinner"]);
-                        }
-
-                        stepLeftInSimulation = simulationSteps + config["MaxStepsAfterWinner"];
+                        //this sim has already done a step in this round
+                        if (remainingCleaner->steps > simulationSteps)
+                            remainingCleaner->aboutToFinish(config["MaxStepsAfterWinner"] - 1);
+                        else
+                            remainingCleaner->aboutToFinish(config["MaxStepsAfterWinner"]);
                     }
-                    simsDoneInStep++;
+
+                    stepLeftInSimulation = simulationSteps + config["MaxStepsAfterWinner"];
                 }
+                simsDoneInStep++;
             }
         }
         currPosition += simsDoneInStep;
@@ -140,7 +134,7 @@ string Simulator::ParseAlgorithmPathParam(int argc, const char **argv)
 
 string Simulator::ParseScoreParam(int argc, const char **argv)
 {
-    string paramPrefix = "-score";
+    string paramPrefix = "-score_formula";
     return ParseParam(paramPrefix, argc, argv);
 }
 
@@ -178,12 +172,11 @@ string Simulator::ParseParam(string paramPrefix, int argc, const char* argv[])
 int Simulator::calcScore(const CleanerResult& cleanerResult, int winnerNumSteps, int loserPosition) const
 {
     map<string, int> score_params;
-    int dirtCollected = min(cleanerResult.sumDirtCollected, cleanerResult.sumDirtInHouse);
     score_params["actual_position_in_competition"] = cleanerResult.position;//cleanerResult.getActualPosition(loserPosition);
     score_params["winner_num_steps"] = winnerNumSteps;
     score_params["this_num_steps"] = cleanerResult.numOfSteps;
     score_params["sum_dirt_in_house"] = cleanerResult.sumDirtInHouse;
-    score_params["dirt_collected"] = dirtCollected;
+    score_params["dirt_collected"] = cleanerResult.sumDirtCollected;
     score_params["is_back_in_docking"] = cleanerResult.isBackInDocking;
 
     return calcScorePtr(score_params);
@@ -216,7 +209,6 @@ void Simulator::ReadParams(int argc, const char * argv[])
 
     void* filename = nullptr;
     calcScorePtr = FileReader::ScoreFunction(scoreFuncPath, filename);
-    calcScorePtr = calc_score;
     if (calcScorePtr == nullptr)
     {
         calcScorePtr = calc_score;
@@ -234,25 +226,25 @@ void Simulator::loadAlgorithms()
     PRINT_DEBUG("Loading Algorithms");
     AlgorithmRegistrar& registrar = AlgorithmRegistrar::getInstance();
 
-    for (auto algoName : algorithmFiles)
-    {
-        size_t startIndex = algoName.rfind('/');
-        string pref = algoName.substr(startIndex+1, 12);
-
-        int result = registrar.loadAlgorithm(algoName, pref);
-        if (result == -1)
-        {
-            errorHouses.push_back(pair<string,string>(pref + "file cannot be loaded or is not a valid .so", ""));
-        }
-        else if (result == -2)
-        {
-            errorHouses.push_back(pair<string,string>(pref + "valid .so but no algorithm was registered after loading it", ""));
-        }
-        //TODO:REMOVE DEBUG LOAD
-    }
+//    for (auto algoName : algorithmFiles)
+//    {
+//        size_t startIndex = algoName.rfind('/');
+//        string pref = algoName.substr(startIndex+1, 12);
+//
+//        int result = registrar.loadAlgorithm(algoName, pref);
+//        if (result == -1)
+//        {
+//            errorHouses.push_back(pair<string,string>(pref + "file cannot be loaded or is not a valid .so", ""));
+//        }
+//        else if (result == -2)
+//        {
+//            errorHouses.push_back(pair<string,string>(pref + "valid .so but no algorithm was registered after loading it", ""));
+//        }
+//        //TODO:REMOVE DEBUG LOAD
+//    }
 
     //TODO:Remove
-//    registrar.loadDebugAlgorithm("", "");
+    registrar.loadDebugAlgorithm("", "");
 
     PRINT_DEBUG("Getting Algos");
     list<unique_ptr<AbstractAlgorithm> > algorithmPointers = registrar.getAlgorithms();
@@ -260,12 +252,12 @@ void Simulator::loadAlgorithms()
 
     vector<string> algoNames = registrar.getAlgorithmNames();
 
-    if (algorithmPointers.size() == 0)
-    {
-        cout << "All algorithm files in target folder " + algorithmsPath +  "cannot be opened or are invalid:" << endl;
-        printResults(false);
-        exit(0);
-    }
+//    if (algorithmPointers.size() == 0)
+//    {
+//        cout << "All algorithm files in target folder " + algorithmsPath +  "cannot be opened or are invalid:" << endl;
+//        printResults(false);
+//        exit(0);
+//    }
 }
 
 list<pair<string, unique_ptr<AbstractAlgorithm> > > Simulator::getLoadedAlgorithms()
