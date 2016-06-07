@@ -83,8 +83,8 @@ void Simulator::runCompetitionOnHouse(int houseIndex)
                         PRINT_DEBUG("first winner!! Steps: " << cleaner->steps);
                         someoneDone = true;
                         winnerNumSteps = cleaner->steps;
+                        cleaner->setPosition(currPosition);
 
-                        //signal all sims first algo has finished
                         for (auto& remainingCleaner : cleaners)
                         {
                             //this sim has already done a step in this round
@@ -99,11 +99,17 @@ void Simulator::runCompetitionOnHouse(int houseIndex)
                     simsDoneInStep++;
                 }
             }
-            if (!cleaner->getDidFinishCleaning())
-                cleaner->setPosition(currPosition);
         }
         currPosition += simsDoneInStep;
         simulationSteps++;
+    }
+//    currPosition++;
+    for (auto& cleaner : cleaners)
+    {
+        if (!cleaner->getDidFinishCleaning()) {
+            cleaner->setPosition(currPosition);
+            currPosition++;
+        }
     }
 
     if (!someoneDone)
@@ -174,7 +180,7 @@ string Simulator::ParseParam(string paramPrefix, int argc, const char* argv[])
 int Simulator::calcScore(const CleanerResult& cleanerResult, int winnerNumSteps, int loserPosition) const
 {
     map<string, int> score_params;
-    score_params["actual_position_in_competition"] = cleanerResult.getActualPosition(loserPosition);
+    score_params["actual_position_in_competition"] = cleanerResult.position;//cleanerResult.getActualPosition(loserPosition);
     score_params["winner_num_steps"] = winnerNumSteps;
     score_params["this_num_steps"] = cleanerResult.numOfSteps;
     score_params["sum_dirt_in_house"] = cleanerResult.sumDirtInHouse;

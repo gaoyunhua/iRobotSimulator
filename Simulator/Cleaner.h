@@ -37,8 +37,8 @@ public:
     CleanerResult GetResult() const;
     CleanerResult stopSimulation();
     void aboutToFinish(int stepsTillFinish){ algorithm->aboutToFinish(stepsTillFinish); }
-    bool isRobotAtDock() { return robotLocation.equals(house->findDocking()); }
-    bool getDidFinishCleaning() { return didFinishCleaning && isRobotAtDock(); }
+    bool isRobotAtDock() const{ return robotLocation.equals(house->findDocking()); }
+    bool getDidFinishCleaning() const { return didFinishCleaning && isRobotAtDock(); }
 
     string getHouseName() const { return house->name; }
     int getHouseMaxSteps() { return house->maxSteps; }

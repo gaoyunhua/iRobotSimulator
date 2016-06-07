@@ -64,7 +64,7 @@ CleanerResult Cleaner::GetResult() const
     if (didCrash)
         return CleanerResult();
 
-    return CleanerResult(steps, sumOfDirt, dirtCleaned, robotLocation.equals(house->findDocking()), position);
+    return CleanerResult(steps, sumOfDirt, dirtCleaned, robotLocation.equals(house->findDocking()), position, getDidFinishCleaning());
 }
 
 void Cleaner::performStep(int &steps, int &dirtCleaned, int &batteryLevel)

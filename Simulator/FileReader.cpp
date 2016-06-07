@@ -190,11 +190,13 @@ House* FileReader::input(string filePath)
 {
     ifstream fin(filePath);
 
-    string name, steps;
+    string name, steps, dummy;
     int rows, cols;
 
-    getline(fin, name);
-    getline(fin, steps);
+    fin >> name;
+    getline(fin, dummy);
+    fin >> steps;
+    getline(fin, dummy);
     fin >> rows;
     fin >> cols;
     fin.ignore();
