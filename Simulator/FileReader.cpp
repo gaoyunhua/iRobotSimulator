@@ -295,7 +295,7 @@ score_func* FileReader::ScoreFunction(string& path, void*& filename)
 	PRINT_DEBUG("Starting to load score formula");
 	vector<string> scoreFiles;
 	//FilesHandler::getFilesWithSuffix(path, ".so", algorithmFiles);
-		scoreFiles = FileReader::GetFilesFromDir(path, "libscore_formula.so.dylib");
+    scoreFiles = FileReader::GetFilesFromDir(path, ".so");
 
 
 	//if no .so found, search in home dir
@@ -315,10 +315,6 @@ score_func* FileReader::ScoreFunction(string& path, void*& filename)
 		cout << "score_formula.so exists in " << path << " but cannot be opened or is not a valid.so" << endl;
 		return nullptr;
 	}
-
-//    int (*f)() = 0;
-//    int *o;
-//    memcpy(&o, &f, sizeof(int*));
 
     void* dlsim = dlsym(filename, "calc_score");
     score_func* calcScorePtr;

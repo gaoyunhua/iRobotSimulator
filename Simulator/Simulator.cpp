@@ -103,12 +103,10 @@ void Simulator::runCompetitionOnHouse(int houseIndex)
         currPosition += simsDoneInStep;
         simulationSteps++;
     }
-//    currPosition++;
     for (auto& cleaner : cleaners)
     {
         if (!cleaner->getDidFinishCleaning()) {
             cleaner->setPosition(currPosition);
-            currPosition++;
         }
     }
 
@@ -180,11 +178,12 @@ string Simulator::ParseParam(string paramPrefix, int argc, const char* argv[])
 int Simulator::calcScore(const CleanerResult& cleanerResult, int winnerNumSteps, int loserPosition) const
 {
     map<string, int> score_params;
+    int dirtCollected = min(cleanerResult.sumDirtCollected, cleanerResult.sumDirtInHouse);
     score_params["actual_position_in_competition"] = cleanerResult.position;//cleanerResult.getActualPosition(loserPosition);
     score_params["winner_num_steps"] = winnerNumSteps;
     score_params["this_num_steps"] = cleanerResult.numOfSteps;
     score_params["sum_dirt_in_house"] = cleanerResult.sumDirtInHouse;
-    score_params["dirt_collected"] = cleanerResult.sumDirtCollected;
+    score_params["dirt_collected"] = dirtCollected;
     score_params["is_back_in_docking"] = cleanerResult.isBackInDocking;
 
     return calcScorePtr(score_params);

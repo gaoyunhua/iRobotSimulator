@@ -9,8 +9,9 @@ public:
     int sumDirtInHouse;
     int sumDirtCollected;
     bool isBackInDocking;
-    bool isDone;
     int position;
+    bool isDone;
+
 
     int getActualPosition(int lastWinningPosition)const
     {
