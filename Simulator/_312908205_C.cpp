@@ -313,4 +313,4 @@ bool _312908205_C::IsTouchingWall(SensorInformation sensation) const
 	}
 }
 
-//REGISTER_ALGORITHM(_312908205_C)
+REGISTER_ALGORITHM(_312908205_C)
