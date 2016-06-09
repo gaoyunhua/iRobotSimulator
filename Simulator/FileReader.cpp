@@ -289,24 +289,20 @@ string FileReader::isValidHouse(House* h)
 
 score_func* FileReader::ScoreFunction(string& path, void*& filename)
 {
+    PRINT_DEBUG("Starting to load score formula: " + path);
     if (path.empty())
 		return nullptr;
-	//get all .so files
-	PRINT_DEBUG("Starting to load score formula");
+
 	vector<string> scoreFiles;
-	//FilesHandler::getFilesWithSuffix(path, ".so", algorithmFiles);
-    scoreFiles = FileReader::GetFilesFromDir(path, ".so");
+    scoreFiles = FileReader::GetFilesFromDir(path, "formula.so");
 
-
-	//if no .so found, search in home dir
-	if (scoreFiles.size() == 0){
-		cout << usageMessage << endl;
+	if (scoreFiles.size() == 0)
+    {
+//		cout << usageMessage << endl;
 		cout << "cannot find score_formula.so file in " << path << endl;
-//		return SetDefaultScoreFormula(GET_WORKING_DIR(), filename);
 		return nullptr;
 	}
 
-	//load handles for dynamic libs
 	PRINT_DEBUG("number of score_formula.so files found: " << scoreFiles.size());
 
 	filename = dlopen(scoreFiles.front().c_str(), RTLD_NOW);
@@ -317,15 +313,15 @@ score_func* FileReader::ScoreFunction(string& path, void*& filename)
 	}
 
     void* dlsim = dlsym(filename, "calc_score");
+    if (dlsym == NULL)  //error in dlsym
+    {
+        cout << "score_formula.so is a valid .so but it does not have a valid score formula " << endl;
+        return nullptr;
+    }
     score_func* calcScorePtr;
     memcpy(&calcScorePtr, &dlsim, sizeof(score_func *));
-//	score_func* calcScorePtr = (score_func*)
-	const char* dlsym_error = dlerror();
-	if (dlsym_error != nullptr)  //error in dlsym
-	{
-		cout << "score_formula.so is a valid .so but it does not have a valid score formula " << endl;
-		return nullptr;
-	}
+//	const char* dlsym_error = dlerror();
+
 	return calcScorePtr;
 }
 
@@ -350,7 +346,6 @@ vector<string> FileReader::GetFilesFromDir(string dirPath, string suffix)
 
             if (strstr(ent->d_name, suffix.c_str()))
             {
-                //cout << "found matching file!!" << endl;
                 filesListToLoad.push_back(FileReader::concatenateAbsolutePath(path, ent->d_name));
             }
 

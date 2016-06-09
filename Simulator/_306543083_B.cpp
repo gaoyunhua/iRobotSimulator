@@ -1,8 +1,7 @@
 
-#include "_312908205_A.h"
+#include "_306543083_B.h"
 
-
-_312908205_A::_312908205_A() : GeneralAlgorithm(), Dock(0, 0), offset(0, 0)
+_306543083_B::_306543083_B() : GeneralAlgorithm(), Dock(0, 0), offset(0, 0)
 , houseMap(Dock), battery(100, 1, 10), stepsLeft(Common::MAX_INT), algo_state()
 , last_suggested_dir(Direction::Stay), approximate_distance(0), steps_till_next_check(0),
 about_to_finish(false), stepsTillFinishing(Common::MAX_INT)
@@ -12,39 +11,38 @@ about_to_finish(false), stepsTillFinishing(Common::MAX_INT)
 	battery_caution_limit = (float) (battery.capacity * BATTERY_FACTOR);
 }
 
-
-Direction _312908205_A::step(Direction lastStep)
+Direction _306543083_B::step(Direction lastStep)
 {
 	SensorInformation sensing = useSensor();
 	Direction chosen_dir = Direction::Stay;
 	offset = offset + lastStep;
 	//update battery level
 
-	if (offset == Dock && battery.level < 10)
+	if (offset == houseMap.ConvertToLocation(33, 18))
 		offset = offset;
 	houseMap.UpdateMap(sensing, offset);
 
-	//PRINT_DEBUG("_312908205_A:step");
+	//PRINT_DEBUG("PicassoAlgorithm:step");
 	if (DEBUG){
 		debug_counter++;
 		if (debug_counter % 100 == 0){
 			houseMap.printMe(offset);
 			cout << debug_counter << endl;
 		}
-/*
+		/*
 		if (debug_counter > 2260)
 		{
 		houseMap.printMe(offset);
 		PRINT_DEBUG("algo_state" << algo_state);
 		}
-*/
+		*/
 	}
 
 
 	//checkBatteryLevel(battery);
 	algo_state = checkState(battery, offset);
 
-	
+
 	if (algo_state > 5)
 		algo_state = getNextDestination(offset);
 
@@ -52,25 +50,31 @@ Direction _312908205_A::step(Direction lastStep)
 	{
 	case LOOK_FOR_CLOSEST_N:
 	case LOOK_FOR_BORDER_N:
+		//clean spot only when borders are fully discovered
+		if (houseMap.IsBordersDiscovered() && sensing.dirtLevel > 0)
+			chosen_dir = Direction::Stay;
+		else
+		{
+			if (shortestPathToDest.size() == 0){
+				houseMap.bfs(offset, shortestPathToDest, MAP_CHAR_D);
+			}
+			chosen_dir = getDirByPath(offset, lastStep, last_suggested_dir, shortestPathToDest);
+		}
+		break;
 	case LOOK_FOR_DIRT:
 		if (sensing.dirtLevel > 0)
 			chosen_dir = Direction::Stay;
-		else	
+		else
 		{
 			if (shortestPathToDest.size() == 0){
-				cout << "algo state is: " << algo_state << " offset is: " << offset.x << " " << offset.y << endl; //karina delete
-				algo_state = checkState(battery, offset);
-				cout << "algo state is: " << algo_state << " offset is: " << offset.x << " " << offset.y << endl; //karina delete
+				houseMap.bfs(offset, shortestPathToDest, MAP_CHAR_D);
 			}
 			chosen_dir = getDirByPath(offset, lastStep, last_suggested_dir, shortestPathToDest);
 		}
 		break;
 	case GO_TO_RECHARGE:
 		if (shortestPathToDock.size() == 0){
-			cout << "algo state is: " << algo_state << " offset is: " << offset.x << " " << offset.y << endl; //karina delete
-			//algo_state = checkState(battery, offset);
-			cout << houseMap.bfs(offset, shortestPathToDock, MAP_CHAR_D) << endl;
-			cout << "algo state is: " << algo_state << " offset is: " << offset.x << " " << offset.y << endl; //karina delete
+			houseMap.bfs(offset, shortestPathToDock, MAP_CHAR_D);
 		}
 		chosen_dir = getDirByPath(offset, lastStep, last_suggested_dir, shortestPathToDock);
 		if (DEBUG)
@@ -97,7 +101,7 @@ Direction _312908205_A::step(Direction lastStep)
 	return Direction::West;
 }
 
-void _312908205_A::UpdateBatteryLevel(const Location& offset)
+void _306543083_B::UpdateBatteryLevel(const Location& offset)
 {
 	if (offset == Dock)
 		chargeBattery();
@@ -106,7 +110,7 @@ void _312908205_A::UpdateBatteryLevel(const Location& offset)
 }
 
 //TODO: implement
-Direction _312908205_A::getDirByPath(const Location& offset, Direction lastStep, Direction last_suggested_dir, vector<Location>& PathToDest)
+Direction _306543083_B::getDirByPath(const Location& offset, Direction lastStep, Direction last_suggested_dir, vector<Location>& PathToDest)
 {
 	//return UP;
 	if (offset == PathToDest.back())
@@ -120,7 +124,7 @@ Direction _312908205_A::getDirByPath(const Location& offset, Direction lastStep,
 }
 
 
-int _312908205_A::checkdustLevel(const SensorInformation& sensing)
+int _306543083_B::checkdustLevel(const SensorInformation& sensing)
 {
 	return sensing.dirtLevel;
 }
@@ -129,7 +133,7 @@ int _312908205_A::checkdustLevel(const SensorInformation& sensing)
 //gets the shortest path to dock, and sets the next time to recheck the distance
 //function is called each time refresh rate reaches 0, 
 //or when about_to_finish, or when battery level reaches caution_limit
-int _312908205_A::updatePathToDock()
+int _306543083_B::updatePathToDock()
 {
 	houseMap.bfs(offset, shortestPathToDock, MAP_CHAR_D);
 	int distance = shortestPathToDock.size();
@@ -143,30 +147,32 @@ int _312908205_A::updatePathToDock()
 
 //check if it's time to go back, maybe it's to charge or to finish
 //function is called if not recharging, and not going to
-bool _312908205_A::IsGoBackToDock(const Battery& battery)
+bool _306543083_B::IsGoBackToDock(const Battery& battery)
 {
 	//check if battery is under caution_limit
 	//check what's the approximate distance to dock
 	//check if battery's enough to go back
-	if (battery.level < battery_caution_limit || steps_till_next_check <= 0 || approximate_distance >= DISTANCE_FACTOR * stepsLeft)
+	if (battery.level < battery_caution_limit || steps_till_next_check <= 0)
 		approximate_distance = updatePathToDock();
-		
-	if (approximate_distance >= DISTANCE_FACTOR * stepsLeft && (stepsLeft - approximate_distance < MAX_SPARE_STEPS))
+
+	if (approximate_distance >= DISTANCE_FACTOR * stepsLeft)
+	{
+		approximate_distance = updatePathToDock();
 		return true;
-	
+	}
 
 	return false;
 }
 
 //get the state which sets this step's behavior
-ALGO_STATE_ENUM _312908205_A::checkState(const Battery& battery, const Location& offset)
+ALGO_STATE_ENUM _306543083_B::checkState(const Battery& battery, const Location& offset)
 {
 	if (algo_state == RECHARGING)
 	{
 		//battery not full yet
 		if (battery.level < battery.capacity)
 			return RECHARGING;
-		
+
 		//else
 		return getNextDestination(offset);
 	}
@@ -175,7 +181,7 @@ ALGO_STATE_ENUM _312908205_A::checkState(const Battery& battery, const Location&
 		//didn't reach docking yet
 		if (!(offset == Dock))
 			return GO_TO_RECHARGE;
-		
+
 		shortestPathToDock.clear();
 		return RECHARGING;
 	}
@@ -189,12 +195,12 @@ ALGO_STATE_ENUM _312908205_A::checkState(const Battery& battery, const Location&
 
 		return GO_TO_RECHARGE;
 	}
-	
+
 	if (algo_state == LOOK_FOR_BORDER_N || algo_state == LOOK_FOR_CLOSEST_N)
 	{
 		/*TODO: check if this cell is the destination,
-		  TODO: if not, continue to dest*/
-		
+		TODO: if not, continue to dest*/
+
 		//reached 'N' on border
 		if ((shortestPathToDest.size() != 0 && shortestPathToDest.front() == offset) || shortestPathToDest.size() == 0)
 		{
@@ -220,25 +226,22 @@ ALGO_STATE_ENUM _312908205_A::checkState(const Battery& battery, const Location&
 	}
 
 	return ALGO_STATE_ENUM::UNDEFINED;
-	return getNextDestination(offset);
 }
 
-ALGO_STATE_ENUM _312908205_A::getNextDestination(const Location& offset)
+ALGO_STATE_ENUM _306543083_B::getNextDestination(const Location& offset)
 {
 	bool exists;
 
-	if (!houseMap.IsBordersDiscovered() && houseMap.getSize() < 500)
+	if (!houseMap.IsBordersDiscovered())
 	{
 		exists = houseMap.bfs(offset, shortestPathToDest, MAP_CHAR_N_BORDER);
 		if (exists)
-			return LOOK_FOR_BORDER_N;		
+			return LOOK_FOR_BORDER_N;
 	}
 
 	exists = houseMap.bfs(offset, shortestPathToDest, MAP_CHAR_N_CLOSEST);
-	if (exists && shortestPathToDest.size() <= stepsLeft - shortestPathToDest.size() - MAX_SPARE_STEPS)
-	{
+	if (exists)
 		return LOOK_FOR_CLOSEST_N;
-	}
 
 	exists = houseMap.bfs(offset, shortestPathToDest, MAP_CHAR_DIRT);
 	if (exists)
@@ -251,11 +254,11 @@ ALGO_STATE_ENUM _312908205_A::getNextDestination(const Location& offset)
 	return RECHARGING;
 }
 
-ALGO_STATE_ENUM _312908205_A::updatePath(const Location& offset)
+ALGO_STATE_ENUM _306543083_B::updatePath(const Location& offset)
 {
 	//reached 'N' on border
 	if (shortestPathToDest.size() != 0 && shortestPathToDest.front() == offset)
-			shortestPathToDest.clear();
+		shortestPathToDest.clear();
 
 	//haven't reached destination yet
 	else if (shortestPathToDest.size() != 0)
@@ -272,7 +275,7 @@ ALGO_STATE_ENUM _312908205_A::updatePath(const Location& offset)
 		if (!exists)
 			return GO_TO_RECHARGE;
 
-		
+
 		return LOOK_FOR_BORDER_N;
 
 	}
@@ -280,88 +283,27 @@ ALGO_STATE_ENUM _312908205_A::updatePath(const Location& offset)
 
 }
 
-/*
-Direction _312908205_A::lookForWallState(const SensorInformation& sensation)
-{
-	Direction goTo;
 
-	//if wall already found, switch state
-	if (IsTouchingWall(sensation))
-	{
-		algo_state = STICK_TO_WALL;
-		goTo = getWallOnTheRightDir(sensation);
-		return goTo;
-	}
-
-	//if not touching any wall
-	for (int dir = 0; dir < 4; dir++)
-	{
-		//prefer to visit an unknown cell
-		if (houseMapLocation.at(offset + Direction(dir)) == 'N')
-		{
-			goTo = Direction(dir);
-			return goTo;
-		}
-	}
-
-	//if all cells are known
-	return RIGHT;
-}
-*/
-/*
-void _312908205_A::UpdateMap(const SensorInformation& sensation)
-{
-	addThisCellToMap(sensation);
-	addNeighborCellsToMap(sensation);
-}
-
-//add information about the current cell - add 'W' for wall, 'N' otherwise
-void _312908205_A::addThisCellToMap(const SensorInformation& sensation)
-{
-	if (houseMapLocation.at(offset) != 'D')
-		houseMapLocation[offset] = MAX_VAL(sensation.dirtLevel - 1, 0) + '0';
-}
-
-//add information about the surrounding cells - add 'W' for wall, 'N' otherwise
-void _312908205_A::addNeighborCellsToMap(const SensorInformation& sensation)
-{
-	//check all 4 surrounding cells
-	for (int dir = 0; dir < 4; dir++)
-	{
-		Location neighbor = offset + Direction(dir);
-		bool notInMap = houseMapLocation.count(neighbor) == 0;
-		if (notInMap && HouseMap::IsOutOfBorder(neighbor))
-			HouseMap::expandBorders(neighbor);
-		if (notInMap || (!notInMap && houseMapLocation.at(neighbor) == '?'))
-		{
-			if (sensation.isWall[dir] == 0)
-				houseMapLocation[neighbor] = 'N';
-			else
-				houseMapLocation[neighbor] = 'W';
-		}
-	}
-}
-*/
 //check if one of the surrounding cells is a wall
-bool _312908205_A::IsTouchingWall(SensorInformation sensation) const
+bool _306543083_B::IsTouchingWall(SensorInformation sensation) const
 {
 	//SensorInformation sensation = sensor->sense();
 	if (sensation.isWall[int(Direction::East)] || sensation.isWall[int(Direction::North)] ||
 		sensation.isWall[int(Direction::South)] || sensation.isWall[int(Direction::West)])
 	{
-		PRINT_DEBUG("_312908205_A:IsTouchingWall: returning true");
+		PRINT_DEBUG("PicassoAlgorithm:IsTouchingWall: returning true");
 		return true;
 	}
 	else
 	{
-		PRINT_DEBUG("_312908205_A:IsTouchingWall: returning false");
+		PRINT_DEBUG("PicassoAlgorithm:IsTouchingWall: returning false");
 		return false;
 	}
 }
 
 //get a direction so the wall is on the right side from you
 //TODO: change this it's mistaken
-Direction _312908205_A::getWallOnTheRightDir(const SensorInformation& sensation)
+Direction _306543083_B::getWallOnTheRightDir(const SensorInformation& sensation)
 {
 	Direction goTo = RIGHT;
 	int securityCount = 0;
@@ -370,57 +312,10 @@ Direction _312908205_A::getWallOnTheRightDir(const SensorInformation& sensation)
 		goTo = Common::counterClockwiseDirection(goTo);
 		securityCount++;
 		if (securityCount > 6)
-			PRINT_DEBUG("_312908205_A:getWallOnTheRightDir: stuck ");
+			PRINT_DEBUG("PicassoAlgorithm:getWallOnTheRightDir: stuck ");
 	}
-	PRINT_DEBUG("_312908205_A:getWallOnTheRightDir: returning " << goTo);
+	PRINT_DEBUG("PicassoAlgorithm:getWallOnTheRightDir: returning " << goTo);
 	return goTo;
 }
 
-void _312908205_A::UpdateAlgorithmStatus(Direction lastStep)
-{
-}
-
-//TODO: delete or something
-Direction _312908205_A::AlignToWall()
-{
-	/*SensorInformation sensed = sensor->sense();
-	if (sensed.isWall[int(Direction::East)]);*/
-	return Direction::West;
-}
-
-/*
-Direction _312908205_A::GoBackToDock()
-{
-}
-
-Direction _312908205_A::GoBackToDockOpportunistic()
-{
-}
-
-Direction _312908205_A::GoBackToDockDirectly()
-{
-}
-
-Direction _312908205_A::Clean()
-{
-}
-
-Direction _312908205_A::LastStepsToFinish()
-{
-}
-
-int _312908205_A::ComputeScore(int row, int col)
-{
-}
-
-int _312908205_A::FindShortestDistance(int firstRow, int firstCol, int secondRow, int secondCol)
-{
-}
-
-bool _312908205_A::IsInDocking()
-{
-}
-
-*/
-
-REGISTER_ALGORITHM(_312908205_A)
+REGISTER_ALGORITHM(_306543083_B)

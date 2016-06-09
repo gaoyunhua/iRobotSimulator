@@ -20,7 +20,6 @@
 #include <iomanip>
 #include <sstream>
 
-
 using namespace std;
 
 class Simulator
@@ -54,8 +53,6 @@ private:
     void runCompetitionOnHouse(int houseIndex);
 
     void runSimulation(int threadsCount);
-
-
 };
 
 

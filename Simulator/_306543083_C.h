@@ -1,14 +1,16 @@
 
 
-#ifndef __VANGOGHALGORITHM__H_
-#define __VANGOGHALGORITHM__H_
+#ifndef __DALIALGORITHM__H_
+#define __DALIALGORITHM__H_
 
 #include "GeneralAlgorithm.h"
 
-#define BATTERY_FACTOR 0.55
+#define BATTERY_FACTOR 0.53
 #define DISTANCE_FACTOR 0.75
+#define MAX_SPARE_STEPS 13
 
-class _312908205_B : public GeneralAlgorithm /*AbstractAlgorithm*/ {
+class _306543083_C : public GeneralAlgorithm
+{
 	Location Dock;
 	Location offset;
 	HouseMap2 houseMap;
@@ -31,7 +33,7 @@ class _312908205_B : public GeneralAlgorithm /*AbstractAlgorithm*/ {
 	int stepsTillFinishing;
 
 public:
-	_312908205_B();
+	_306543083_C();
 
 	//void setSensor(const AbstractSensor& sensor) override { this->sensor = &sensor; }
 
@@ -74,9 +76,12 @@ private:
 
 //	Direction AlignToWall(){};
 
+	//void UpdateMap(const SensorInformation& sensation);
+	//void addThisCellToMap(const SensorInformation& sensation);
+	//void addNeighborCellsToMap(const SensorInformation& sensation);
 	bool IsTouchingWall(SensorInformation sensation) const;
 
-	static Direction getWallOnTheRightDir(const SensorInformation & sensation);
+//	static Direction getWallOnTheRightDir(const SensorInformation & sensation){};
 };
 
 #endif

@@ -1,15 +1,13 @@
-
-
-#ifndef __DALIALGORITHM__H_
-#define __DALIALGORITHM__H_
+#ifndef __PICASSOALGORITHM__H_
+#define __PICASSOALGORITHM__H_
 
 #include "GeneralAlgorithm.h"
 
-#define BATTERY_FACTOR 0.53
-#define DISTANCE_FACTOR 0.75
-#define MAX_SPARE_STEPS 13
+#define BATTERY_FACTOR 0.55
+#define DISTANCE_FACTOR 0.80
+#define MAX_SPARE_STEPS 14
 
-class _312908205_C : public GeneralAlgorithm
+class _306543083_A : public GeneralAlgorithm
 {
 	Location Dock;
 	Location offset;
@@ -27,13 +25,13 @@ class _312908205_C : public GeneralAlgorithm
 	int debug_counter = 0;
 	int debug_max_caution_distance = 0;
 
-	//from Itay:
+	//from I:
 	//Location Dock;
 	//Location offset;	//keep track of robot's location wrt docking station
 	int stepsTillFinishing;
 
 public:
-	_312908205_C();
+	_306543083_A();
 
 	//void setSensor(const AbstractSensor& sensor) override { this->sensor = &sensor; }
 
@@ -58,8 +56,8 @@ public:
 
 	int updatePathToDock();
 
-	void aboutToFinish(int stepsTillFinishing) override
-	{
+	void aboutToFinish(int stepsTillFinishing) override 
+	{ 
 		stepsLeft = min(stepsTillFinishing, battery.level);
 		about_to_finish = true;
 		updatePathToDock();
@@ -68,20 +66,20 @@ public:
 private:
 	//Direction lookForWallState(const SensorInformation& sensation);
 
-//	void UpdateAlgorithmStatus(Direction lastStep){};
+	void UpdateAlgorithmStatus(Direction lastStep);
 
 	ALGO_STATE_ENUM updatePath(const Location& offset);
 
 	ALGO_STATE_ENUM getNextDestination(const Location& offset);
 
-//	Direction AlignToWall(){};
+	Direction AlignToWall();
 
 	//void UpdateMap(const SensorInformation& sensation);
 	//void addThisCellToMap(const SensorInformation& sensation);
 	//void addNeighborCellsToMap(const SensorInformation& sensation);
 	bool IsTouchingWall(SensorInformation sensation) const;
 
-//	static Direction getWallOnTheRightDir(const SensorInformation & sensation){};
+	static Direction getWallOnTheRightDir(const SensorInformation & sensation);
 };
 
 #endif

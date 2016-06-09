@@ -2,7 +2,7 @@
 #ifndef SIMULATOR_DEBUGGER_H
 #define SIMULATOR_DEBUGGER_H
 
-#define DEBUG 1
+#define DEBUG 0
 
 #define PRINT_DEBUG(msg) do{	\
     if (DEBUG)				\

@@ -240,10 +240,9 @@ void Simulator::loadAlgorithms()
         {
             errorHouses.push_back(pair<string,string>(pref + "valid .so but no algorithm was registered after loading it", ""));
         }
-        //TODO:REMOVE DEBUG LOAD
+
     }
 
-    //TODO:Remove
 //    registrar.loadDebugAlgorithm("", "");
 
     PRINT_DEBUG("Getting Algos");
