@@ -4,6 +4,8 @@
 
 #define DEBUG 0
 
+#define DIRECT_LOADING 0
+
 #define PRINT_DEBUG(msg) do{	\
     if (DEBUG)				\
 	    cout << msg << endl;	\

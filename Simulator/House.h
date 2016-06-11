@@ -2,8 +2,14 @@
 #ifndef SIMULATOR_HOUSE_H
 #define SIMULATOR_HOUSE_H
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include <iostream>
 #include "Point.h"
+#include "Montage.h"
+#include "Encoder.h"
+//#include "common.h"
 
 using namespace std;
 
@@ -34,7 +40,7 @@ public:
     Point find(char itemType);
     bool isPointValid(Point p) const;
 
-    bool isWall(Point point) const;
+	bool isWall(Point point) const;
     int dirtLevel(Point point) const;
     int cleanOneUnit(Point& point);
     int amountOfDirt();

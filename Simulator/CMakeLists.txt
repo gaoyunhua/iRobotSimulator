@@ -27,10 +27,11 @@ set(SOURCE_FILES
         AlgorithmRegistrar.cpp AlgorithmRegistrar.h
         score_formula.cpp
         Debugger.h
-        AlgorithmRegistration.h AlgorithmRegistration.cpp Algorithm.cpp
+        AlgorithmRegistration.h AlgorithmRegistration.cpp
         ScoreManager.cpp ScoreManager.h my_make_unique.h
         _306543083_A.h _306543083_A.cpp _306543083_B.h _306543083_B.cpp _306543083_C.h _306543083_C.cpp
-        GeneralAlgorithm.h GeneralAlgorithm.cpp Location.cpp Location.h Battery.h Common.h Common.cpp HouseMap2.cpp HouseMap2.h)
+        GeneralAlgorithm.h GeneralAlgorithm.cpp Location.cpp Location.h Battery.h Common.h Common.cpp HouseMap2.cpp HouseMap2.h
+        Encoder.h Encoder.cpp Montage.cpp Montage.h)
 
 #AbstractAlgorithm.h is part of BOTH
 
@@ -44,8 +45,6 @@ set(SOURCE_FILES
 
 
 #add_library(algo.o STATIC ${ALGO_FILES})
-
-set(G_FILES my_make_unique.h AlgorithmRegistration.h Algorithm.cpp _306543083_G.cpp)
 
 #set(N_FILES _306543083_N.cpp)
 

@@ -2,6 +2,9 @@
 #ifndef SIMULATOR_SIMULATOR_H
 #define SIMULATOR_SIMULATOR_H
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include <string>
 #include "CleanerResult.h"
 #include "FileReader.h"
@@ -20,6 +23,7 @@
 #include <iomanip>
 #include <sstream>
 
+
 using namespace std;
 
 class Simulator
@@ -31,6 +35,7 @@ public:
 
     string ParseConfigParam(int argc, const char **argv);
     string ParseHouseParam(int argc, const char **argv);
+    bool ParseVideoParam(int argc, const char **argv);
     string ParseScoreParam(int argc, const char **argv);
     int ParseThreadsParam(int argc, const char **argv);
     string ParseAlgorithmPathParam(int argc, const char **argv);
@@ -46,13 +51,16 @@ private:
     score_func* calcScorePtr;
     map<string,int> config;
     int threads;
+    bool isVideo;
     int calcScore(const CleanerResult &cleanerResult, int winnerNumSteps, int loserPosition) const;
     void printResults(bool withScoreTable);
     string algorithmsPath;
     ScoreManager* scoreManager;
     void runCompetitionOnHouse(int houseIndex);
+	static void encode(const string& algoName, const string& houseName);
+	void runSimulation(int threadsCount);
 
-    void runSimulation(int threadsCount);
+
 };
 
 

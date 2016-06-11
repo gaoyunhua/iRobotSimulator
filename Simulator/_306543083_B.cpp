@@ -11,6 +11,7 @@ about_to_finish(false), stepsTillFinishing(Common::MAX_INT)
 	battery_caution_limit = (float) (battery.capacity * BATTERY_FACTOR);
 }
 
+
 Direction _306543083_B::step(Direction lastStep)
 {
 	SensorInformation sensing = useSensor();
@@ -301,8 +302,6 @@ bool _306543083_B::IsTouchingWall(SensorInformation sensation) const
 	}
 }
 
-//get a direction so the wall is on the right side from you
-//TODO: change this it's mistaken
 Direction _306543083_B::getWallOnTheRightDir(const SensorInformation& sensation)
 {
 	Direction goTo = RIGHT;
@@ -318,4 +317,6 @@ Direction _306543083_B::getWallOnTheRightDir(const SensorInformation& sensation)
 	return goTo;
 }
 
+#if !DIRECT_LOADING
 REGISTER_ALGORITHM(_306543083_B)
+#endif

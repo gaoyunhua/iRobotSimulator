@@ -1,5 +1,6 @@
 
 #include "Simulator.h"
+#include "Encoder.h"
 
 
 extern "C" int calc_score(const std::map<std::string, int>& score_params);
@@ -41,7 +42,7 @@ void Simulator::runCompetitionOnHouse(int houseIndex)
         Sensor* as = new Sensor(*houseCopy, *robotLocation);
         PRINT_DEBUG("Building Cleaner");
 
-        cleaners.push_back(make_unique<Cleaner>(algo.second, as, houseCopy, *robotLocation, config, algo.first));
+        cleaners.push_back(make_unique<Cleaner>(algo.second, as, houseCopy, *robotLocation, config, algo.first, isVideo));
         PRINT_DEBUG("Storing cleaner");
     }
 
@@ -117,8 +118,26 @@ void Simulator::runCompetitionOnHouse(int houseIndex)
         }
 
         scoreManager->addScore(cleaners[i]->algorithmName, cleaners[i]->getHouseName(), score);
+        
+        if(isVideo)
+            encode(cleaners[i]->algorithmName, cleaners[i]->getHouseName());
     }
 }
+
+void Simulator::encode(const string& algoName, const string& houseName)
+{
+	string simulationDir = "simulations/" + algoName + "_" + houseName + "/";
+	string imagesExpression = simulationDir + "image%5d.jpg";
+	Encoder::encode(imagesExpression, algoName + "_" + houseName + ".mpg");
+	
+	string encodeCmd = "rm -r ./simulations/" + algoName + "_" + houseName;
+	int ret = system(encodeCmd.c_str());
+
+	if (ret == -1){
+		//handle error
+	}
+}
+
 
 string Simulator::ParseConfigParam(int argc, const char **argv)
 {
@@ -136,6 +155,13 @@ string Simulator::ParseScoreParam(int argc, const char **argv)
 {
     string paramPrefix = "-score_formula";
     return ParseParam(paramPrefix, argc, argv);
+}
+
+bool Simulator::ParseVideoParam(int argc, const char **argv)
+{
+    string paramPrefix = "-video";
+    string isVideo = ParseParam(paramPrefix, argc, argv);
+    return !isVideo.empty();
 }
 
 int Simulator::ParseThreadsParam(int argc, const char **argv)
@@ -160,6 +186,8 @@ string Simulator::ParseParam(string paramPrefix, int argc, const char* argv[])
         string param = argv[i];
         if (param.compare(paramPrefix) == 0)
         {
+            if (param.compare("-video") == 0)
+                return "1";
             if ((i+1) <= argc)
             {
                 return argv[i+1];
@@ -192,6 +220,7 @@ void Simulator::ReadParams(int argc, const char * argv[])
     algorithmsPath = ParseAlgorithmPathParam(argc, argv);
     algorithmFiles = FileReader::ReadAlgorithms(algorithmsPath);
     threads = ParseThreadsParam(argc, argv);
+    isVideo = ParseVideoParam(argc, argv);
 
     auto readHouses = FileReader::ReadHouses(houseParamPath);
     houses = readHouses.first;
@@ -226,6 +255,7 @@ void Simulator::loadAlgorithms()
     PRINT_DEBUG("Loading Algorithms");
     AlgorithmRegistrar& registrar = AlgorithmRegistrar::getInstance();
 
+#if !DIRECT_LOADING
     for (auto algoName : algorithmFiles)
     {
         size_t startIndex = algoName.rfind('/');
@@ -240,10 +270,10 @@ void Simulator::loadAlgorithms()
         {
             errorHouses.push_back(pair<string,string>(pref + "valid .so but no algorithm was registered after loading it", ""));
         }
-
     }
-
-//    registrar.loadDebugAlgorithm("", "");
+#else
+    registrar.loadDebugAlgorithm("", "");
+#endif
 
     PRINT_DEBUG("Getting Algos");
     list<unique_ptr<AbstractAlgorithm> > algorithmPointers = registrar.getAlgorithms();
@@ -251,12 +281,14 @@ void Simulator::loadAlgorithms()
 
     vector<string> algoNames = registrar.getAlgorithmNames();
 
+    #if !DIRECT_LOADING
     if (algorithmPointers.size() == 0)
     {
         cout << "All algorithm files in target folder " + algorithmsPath +  "cannot be opened or are invalid:" << endl;
         printResults(false);
         exit(0);
     }
+    #endif
 }
 
 list<pair<string, unique_ptr<AbstractAlgorithm> > > Simulator::getLoadedAlgorithms()

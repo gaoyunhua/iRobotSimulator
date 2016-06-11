@@ -422,5 +422,6 @@ bool _306543083_A::IsInDocking()
 }
 
 */
-
+#if !DIRECT_LOADING
 REGISTER_ALGORITHM(_306543083_A)
+#endif

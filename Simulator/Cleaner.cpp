@@ -1,6 +1,8 @@
 
 #include "Cleaner.h"
 #include "Debugger.h"
+#include <algorithm>
+#include <string>
 
 void Cleaner::clean()
 {
@@ -13,15 +15,18 @@ void Cleaner::clean()
     didStopSimulation = false;
     didFinishCleaning = false;
     didCrash = false;
+    imageCounter = 0;
 
     algorithm->setConfiguration(configuration);
     AbstractSensor& a = *sensor;
     algorithm->setSensor(a);
+    
+    if(isVideo)
+	    montage(algorithmName, getHouseName(), robotLocation);
 }
 
 void Cleaner::Step()
 {
-//    printHouse(robotLocation.getX(), robotLocation.getY());
     if (getDidFinishCleaning())
         return;
 
@@ -35,12 +40,6 @@ void Cleaner::Step()
     Direction moveDirection = algorithm->step(prevStep);
 
     Point newRobotLocation = Point::GetPointByDirection(robotLocation, moveDirection);
-//    PRINT_DEBUG(
-//            "Moving:(" +
-//                    to_string(robotLocation.getX()) +
-//                    "," + to_string(robotLocation.getY())  +
-//                    ")-->(" + to_string(newRobotLocation.getX()) +
-//                    "," + to_string(newRobotLocation.getY()) + ")");
 
     if (newRobotLocation.equals(house->findDocking()))
     {
@@ -49,14 +48,18 @@ void Cleaner::Step()
 
     if (house->isWall(newRobotLocation))
     {
-        PRINT_DEBUG("Robot crashed into a wall!");
+        PRINT_DEBUG("\n\nRobot will crash into a wall!!\n\n");
         didCrash = true;
+        return;
     }
 
     performStep(steps, dirtCleaned, batteryLevel);
     robotLocation.move(moveDirection);
     prevStep = moveDirection;
     steps++;
+
+    if(isVideo)
+	    montage(algorithmName, getHouseName(), robotLocation);
 }
 
 CleanerResult Cleaner::GetResult() const
@@ -108,4 +111,36 @@ void Cleaner::printHouse(int iRob, int jRob)
         cout << endl;
     }
     cout << endl;
+}
+
+void createDirectoryIfNotExists(const std::string& dirPath)
+{
+    string cmd = "mkdir -p " + dirPath;
+    int ret = system(cmd.c_str());
+    if (ret == -1)
+    {
+        //handle error
+    }
+}
+
+void Cleaner::montage(const string& algoName, const string& houseName, const Point& robotLocation)
+{
+    vector<string> tiles;
+    for (int row = 0; row < house->rows; ++row)
+    {
+        for (int col = 0; col < house->columns; ++col)
+        {
+            if (row == robotLocation.getX() && col == robotLocation.getY())
+                tiles.push_back("avatars/R");
+            else if (house->point(Point(row,col)) == ' ')
+                tiles.push_back("avatars/0");
+            else
+                tiles.push_back(string() + "avatars/" + house->point(Point(row,col)));
+        }
+    }
+    string imagesDirPath = "./simulations/" + algoName + "_" + houseName;
+    createDirectoryIfNotExists(imagesDirPath);
+    string counterStr = to_string(imageCounter++);
+    string composedImage = imagesDirPath + "/image" + string(5 - counterStr.length(), '0') + counterStr + ".jpg";
+    Montage::compose(tiles, house->columns, house->rows, composedImage);
 }

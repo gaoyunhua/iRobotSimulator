@@ -313,4 +313,6 @@ bool _306543083_C::IsTouchingWall(SensorInformation sensation) const
 	}
 }
 
+#if !DIRECT_LOADING
 REGISTER_ALGORITHM(_306543083_C)
+#endif
